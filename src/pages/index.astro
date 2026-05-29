@@ -1,0 +1,209 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const sampleGive = "klocki LEGO Duplo dobry stan; bluza H&M rozmiar 92 jak nowa; książka 'Mała Mi' twarda oprawa";
+const sampleWant = "lalka Barbie z domkiem; kredki 24 szt; puzzle Disney";
+---
+
+<Layout title="ToySwapper">
+  <div class="relative min-h-screen overflow-hidden bg-gradient-to-tr from-pink-50 via-indigo-50 to-amber-50">
+    <div
+      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-400 opacity-30 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute top-1/3 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-pink-400 opacity-30 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute bottom-10 left-1/3 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-400 opacity-30 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+
+    <main class="relative mx-auto max-w-3xl px-4 pt-16 pb-24">
+      <div class="mb-6 flex justify-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-1.5 text-sm font-medium text-purple-900 shadow-sm backdrop-blur-md"
+        >
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+          </span>
+          ✨ AI Engine Active
+        </span>
+      </div>
+
+      <h1
+        class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
+      >
+        Daj zabawkom drugie życie ✨
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-slate-700 md:text-lg">
+        Wymieniaj się bezgotówkowo i bezpiecznie z rodzicami w swojej okolicy. Nasz system AI zadba o pełną uczciwość
+        każdej oferty.
+      </p>
+
+      <div
+        class="mx-auto mt-10 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-12"
+      >
+        <form id="evaluate-form" novalidate class="space-y-6">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <label class="flex flex-col gap-2">
+              <span class="text-sm font-medium text-slate-700">Co dajesz</span>
+              <textarea
+                id="give"
+                name="give"
+                rows="6"
+                placeholder="LEGO Duplo, bluza H&M..."
+                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                >{sampleGive}</textarea
+              >
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-sm font-medium text-slate-700">Co chcesz</span>
+              <textarea
+                id="want"
+                name="want"
+                rows="6"
+                placeholder="lalka Barbie, kredki..."
+                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                >{sampleWant}</textarea
+              >
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            id="run-btn"
+            class="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 px-8 py-4 text-center font-semibold text-white shadow-xl shadow-purple-500/20 transition-all duration-300 hover:scale-[1.01] hover:opacity-95 active:scale-[0.99]"
+          >
+            Sprawdź uczciwość wymiany
+          </button>
+
+          <div class="flex items-center justify-between gap-3 text-sm">
+            <button type="button" id="clear-btn" class="text-slate-500 transition-colors hover:text-slate-800"
+              >Wyczyść</button
+            >
+            <span id="status-line" aria-live="polite" class="text-slate-500"></span>
+          </div>
+        </form>
+      </div>
+
+      <section
+        id="result"
+        hidden
+        class="mx-auto mt-8 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-10"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-slate-800">Kontrakt wymiany</h2>
+          <button
+            type="button"
+            id="copy-btn"
+            class="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm transition hover:border-purple-400 hover:text-purple-700"
+            >Kopiuj Markdown</button
+          >
+        </div>
+        <div class="mb-4 flex flex-wrap gap-2">
+          <span id="verdict-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+          <span id="source-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+          <span id="delta-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+        </div>
+        <pre
+          id="contract-md"
+          class="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50/80 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap"><code /></pre>
+      </section>
+    </main>
+  </div>
+
+  <script is:inline>
+    (function () {
+      const form = document.getElementById("evaluate-form");
+      const runBtn = document.getElementById("run-btn");
+      const clearBtn = document.getElementById("clear-btn");
+      const statusLine = document.getElementById("status-line");
+      const result = document.getElementById("result");
+      const verdictPill = document.getElementById("verdict-pill");
+      const sourcePill = document.getElementById("source-pill");
+      const deltaPill = document.getElementById("delta-pill");
+      const contractCode = document.querySelector("#contract-md code");
+      const copyBtn = document.getElementById("copy-btn");
+
+      const PILL_BASE = "px-3 py-1 rounded-full text-xs font-semibold tracking-wide";
+
+      function setStatus(msg, isError) {
+        statusLine.textContent = msg;
+        statusLine.className = isError ? "text-rose-600 text-sm" : "text-slate-500 text-sm";
+      }
+
+      function renderVerdict(verdict) {
+        if (!verdict) {
+          verdictPill.textContent = "NO MATCH";
+          verdictPill.className = PILL_BASE + " bg-rose-100 text-rose-800";
+        } else if (verdict === "FAIR") {
+          verdictPill.textContent = "FAIR";
+          verdictPill.className = PILL_BASE + " bg-emerald-100 text-emerald-800";
+        } else {
+          verdictPill.textContent = "NEEDS BALANCING";
+          verdictPill.className = PILL_BASE + " bg-amber-100 text-amber-800";
+        }
+      }
+
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const give = document.getElementById("give").value.trim();
+        const want = document.getElementById("want").value.trim();
+        if (!give || !want) {
+          setStatus("Both lists are required.", true);
+          return;
+        }
+        runBtn.disabled = true;
+        setStatus("Evaluating…", false);
+        const started = performance.now();
+        try {
+          const res = await fetch("/api/evaluate", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ give, want }),
+          });
+          const json = await res.json();
+          if (!res.ok) {
+            setStatus("Error: " + (json.error ?? res.status), true);
+            return;
+          }
+          const elapsedMs = Math.round(performance.now() - started);
+          renderVerdict(json.verdict);
+          sourcePill.textContent = "source: " + json.source;
+          sourcePill.className = PILL_BASE + " bg-indigo-100 text-indigo-800";
+          deltaPill.textContent = json.delta_pln == null ? "delta: n/a" : "delta: " + json.delta_pln + " PLN";
+          deltaPill.className = PILL_BASE + " bg-slate-100 text-slate-700";
+          contractCode.textContent = json.contract;
+          result.hidden = false;
+          setStatus("Done in " + elapsedMs + " ms.", false);
+        } catch (err) {
+          setStatus("Network error: " + (err.message || err), true);
+        } finally {
+          runBtn.disabled = false;
+        }
+      });
+
+      clearBtn.addEventListener("click", () => {
+        document.getElementById("give").value = "";
+        document.getElementById("want").value = "";
+        result.hidden = true;
+        setStatus("", false);
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(contractCode.textContent || "");
+          setStatus("Markdown copied to clipboard.", false);
+        } catch {
+          setStatus("Clipboard copy failed.", true);
+        }
+      });
+    })();
+  </script>
+</Layout>
