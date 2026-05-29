@@ -317,19 +317,19 @@ The existing `ci` job (lint + build) is untouched and still runs for both PR and
 
 #### Automated
 
-- [x] 1.1 `supabase/migrations/20260529120000_rls_baseline.sql` exists and is the only file under `supabase/migrations/`
-- [ ] 1.2 `npx supabase start` boots the local stack cleanly
-- [ ] 1.3 `npx supabase db reset` exits 0 — the migration applies without error from an empty schema
-- [ ] 1.4 After `db reset`, `app.current_user_id()` and `app.tg_set_updated_at()` exist and are `security invoker` with empty `search_path`
-- [x] 1.5 `npm run lint` passes
-- [x] 1.6 `npm run build` still succeeds
+- [x] 1.1 `supabase/migrations/20260529120000_rls_baseline.sql` exists and is the only file under `supabase/migrations/` — bf21952
+- [x] 1.2 `npx supabase start` boots the local stack cleanly
+- [x] 1.3 `npx supabase db reset` exits 0 — the migration applies without error from an empty schema
+- [x] 1.4 After `db reset`, `app.current_user_id()` and `app.tg_set_updated_at()` exist and are `security invoker` with empty `search_path`
+- [x] 1.5 `npm run lint` passes — bf21952
+- [x] 1.6 `npm run build` still succeeds — bf21952
 
 #### Manual
 
-- [ ] 1.7 `CLAUDE.md` and `AGENTS.md` read cleanly — no contradiction with PRD v2
-- [ ] 1.8 `supabase/README.md` is readable cold by a new contributor; the four-policy template is the first thing visible
-- [ ] 1.9 A reviewer can run `npx supabase start && npx supabase db reset` and see `app.current_user_id()` returning `NULL` when called outside an auth context
-- [ ] 1.10 `.dev.vars` populated locally still drives `npm run dev` to a working v1 evaluator (no regression on FR-001..FR-011)
+- [x] 1.7 `CLAUDE.md` and `AGENTS.md` read cleanly — no contradiction with PRD v2
+- [x] 1.8 `supabase/README.md` is readable cold by a new contributor; the four-policy template is the first thing visible
+- [x] 1.9 A reviewer can run `npx supabase start && npx supabase db reset` and see `app.current_user_id()` returning `NULL` when called outside an auth context
+- [x] 1.10 `.dev.vars` populated locally still drives `npm run dev` to a working v1 evaluator (no regression on FR-001..FR-011)
 
 ### Phase 2: RLS verification test
 
