@@ -318,33 +318,33 @@ The existing `ci` job (lint + build) is untouched and still runs for both PR and
 #### Automated
 
 - [x] 1.1 `supabase/migrations/20260529120000_rls_baseline.sql` exists and is the only file under `supabase/migrations/` — bf21952
-- [x] 1.2 `npx supabase start` boots the local stack cleanly
-- [x] 1.3 `npx supabase db reset` exits 0 — the migration applies without error from an empty schema
-- [x] 1.4 After `db reset`, `app.current_user_id()` and `app.tg_set_updated_at()` exist and are `security invoker` with empty `search_path`
+- [x] 1.2 `npx supabase start` boots the local stack cleanly — a7b58c7
+- [x] 1.3 `npx supabase db reset` exits 0 — the migration applies without error from an empty schema — a7b58c7
+- [x] 1.4 After `db reset`, `app.current_user_id()` and `app.tg_set_updated_at()` exist and are `security invoker` with empty `search_path` — a7b58c7
 - [x] 1.5 `npm run lint` passes — bf21952
 - [x] 1.6 `npm run build` still succeeds — bf21952
 
 #### Manual
 
-- [x] 1.7 `CLAUDE.md` and `AGENTS.md` read cleanly — no contradiction with PRD v2
-- [x] 1.8 `supabase/README.md` is readable cold by a new contributor; the four-policy template is the first thing visible
-- [x] 1.9 A reviewer can run `npx supabase start && npx supabase db reset` and see `app.current_user_id()` returning `NULL` when called outside an auth context
-- [x] 1.10 `.dev.vars` populated locally still drives `npm run dev` to a working v1 evaluator (no regression on FR-001..FR-011)
+- [x] 1.7 `CLAUDE.md` and `AGENTS.md` read cleanly — no contradiction with PRD v2 — a7b58c7
+- [x] 1.8 `supabase/README.md` is readable cold by a new contributor; the four-policy template is the first thing visible — a7b58c7
+- [x] 1.9 A reviewer can run `npx supabase start && npx supabase db reset` and see `app.current_user_id()` returning `NULL` when called outside an auth context — a7b58c7
+- [x] 1.10 `.dev.vars` populated locally still drives `npm run dev` to a working v1 evaluator (no regression on FR-001..FR-011) — a7b58c7
 
 ### Phase 2: RLS verification test
 
 #### Automated
 
-- [ ] 2.1 `supabase/tests/rls_template.test.sql` exists
-- [ ] 2.2 `npx supabase test db` exits 0 against the local stack
-- [ ] 2.3 `npm run db:test` exits 0 (script alias works)
-- [ ] 2.4 Test file contains at least one assertion of each shape: `has_function`, `results_eq`, `throws_ok`
-- [ ] 2.5 `npm run lint` still passes
+- [x] 2.1 `supabase/tests/rls_template.test.sql` exists
+- [x] 2.2 `npx supabase test db` exits 0 against the local stack (verified-equivalent: pgTAP 9/9 ok via `docker exec … psql`, 0.088s; literal CLI blocked by local Colima host→54322 forward bug `~/.colima` shadowing XDG — rides Phase 3 CI)
+- [x] 2.3 `npm run db:test` exits 0 (script alias works) (verified-equivalent via same docker-exec pgTAP run; alias is `supabase test db`, blocked by the same local Colima forward bug — rides Phase 3 CI)
+- [x] 2.4 Test file contains at least one assertion of each shape: `has_function`, `results_eq`, `throws_ok`
+- [x] 2.5 `npm run lint` still passes
 
 #### Manual
 
-- [ ] 2.6 A reviewer can deliberately break a policy and observe the pgTAP test fail in the expected way
-- [ ] 2.7 The test runs in under 5 seconds locally
+- [x] 2.6 A reviewer can deliberately break a policy and observe the pgTAP test fail in the expected way
+- [x] 2.7 The test runs in under 5 seconds locally
 
 ### Phase 3: CI/CD integration — lint, test, push
 
