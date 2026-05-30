@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { OPENAI_API_KEY, OPENAI_API_BASE, FAIRNESS_THRESHOLD_PCT } from "astro:env/server";
 import { evaluate } from "@/lib/evaluator";
+import { createClient } from "@/lib/supabase";
+import { getCounterpartyPool } from "@/lib/counterparties";
 
 export const prerender = false;
 
@@ -12,7 +14,7 @@ const RequestSchema = z.object({
   threshold_pct: z.number().min(1).max(99).optional(),
 });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   let payload: unknown;
   try {
     payload = await request.json();
@@ -34,7 +36,9 @@ export const POST: APIRoute = async ({ request }) => {
   const thresholdPct = parsed.data.threshold_pct ?? FAIRNESS_THRESHOLD_PCT;
 
   try {
-    const result = await evaluate(parsed.data.give, parsed.data.want, {
+    const supabase = createClient(request.headers, cookies);
+    const pool = await getCounterpartyPool(supabase);
+    const result = await evaluate(parsed.data.give, parsed.data.want, pool, {
       apiKey: OPENAI_API_KEY,
       baseURL: OPENAI_API_BASE,
       thresholdPct,

@@ -1,0 +1,73 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`counterparty pool migration — determinism > 'FAIR' > contract matches the golden snapshot 1`] = `
+"# ToySwapper Barter Contract
+
+**Counterparty:** Piotr (Gdańsk) (\`piotr-gdansk\`)
+**Verdict:** FAIR
+**Delta:** 16 PLN  (threshold: 20% of larger side's total)
+
+## Operator gives
+
+- wózek spacerowy — *(stroller, good)* — **163 PLN**
+
+**Operator total:** 163 PLN
+
+## Piotr (Gdańsk) gives
+
+- rowerek biegowy Puky używany dobry stan — *(balance-bike, good, Puky)* — **117 PLN**
+- kombinezon zimowy Reima rozmiar 98 — *(snowsuit, good, size 98, Reima)* — **46 PLN**
+- gumowce żabki rozmiar 24 — *(rain-boots, good, size 24)* — **16 PLN**
+
+**Counterparty total:** 179 PLN
+"
+`;
+
+exports[`counterparty pool migration — determinism > 'NEEDS BALANCING' > contract matches the golden snapshot 1`] = `
+"# ToySwapper Barter Contract
+
+**Counterparty:** Kasia (Warszawa) (\`kasia-warszawa\`)
+**Verdict:** NEEDS BALANCING
+**Delta:** 55 PLN  (threshold: 20% of larger side's total)
+
+## Operator gives
+
+- autko resorak — *(toy-car, good)* — **5 PLN**
+
+**Operator total:** 5 PLN
+
+## Kasia (Warszawa) gives
+
+- klocki LEGO Duplo bardzo dobry stan — *(blocks-duplo, good, LEGO)* — **26 PLN**
+- książka 'Mała Mi' twarda oprawa — *(book, good)* — **8 PLN**
+- bluza H&M rozmiar 92 jak nowa — *(clothing-top, like-new, size 92, H&M)* — **26 PLN**
+
+**Counterparty total:** 60 PLN
+
+## Balancing suggestion
+
+no balancing item available — manual negotiation required (delta 55 PLN on max 60 PLN)
+"
+`;
+
+exports[`counterparty pool migration — determinism > 'NO MATCH' > contract matches the golden snapshot 1`] = `
+"# ToySwapper Barter Contract
+
+**Verdict:** NO MATCH
+
+No counterparty in the fixture pool overlaps with your give-list **and** your want-list. Try widening either list.
+
+## Your give-list
+
+*(no items classified)*
+
+## Your want-list
+
+*(no items classified)*
+
+## Couldn't classify
+
+- \`qwerty zxcvb\` — no known category keyword matched
+- \`asdfg hjkl\` — no known category keyword matched
+"
+`;
