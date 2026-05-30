@@ -283,10 +283,10 @@ Complete the migration: delete `src/lib/fixture-pool.ts`, remove the now-impossi
 
 #### Automated
 
-- [x] 2.1 `npm test` passes: all representative contracts match their golden `.md` byte-for-byte
-- [x] 2.2 Pre-deletion equivalence assertion (`FIXTURE_POOL` == golden pool) passes
-- [x] 2.3 `npm run lint` and `npm run build` pass with the new signature and wiring
-- [x] 2.4 Type-check is clean (signature change propagated)
+- [x] 2.1 `npm test` passes: all representative contracts match their golden `.md` byte-for-byte — 5bb50e9
+- [x] 2.2 Pre-deletion equivalence assertion (`FIXTURE_POOL` == golden pool) passes — 5bb50e9
+- [x] 2.3 `npm run lint` and `npm run build` pass with the new signature and wiring — 5bb50e9
+- [x] 2.4 Type-check is clean (signature change propagated) — 5bb50e9
 
 #### Manual
 
@@ -297,10 +297,10 @@ Complete the migration: delete `src/lib/fixture-pool.ts`, remove the now-impossi
 
 #### Automated
 
-- [ ] 3.1 `grep -rn FIXTURE_POOL src/ test/` returns nothing; `src/lib/fixture-pool.ts` no longer exists
-- [ ] 3.2 `npm test` passes with only the golden-pool determinism assertions
-- [ ] 3.3 `.github/workflows/ci.yml` `ci` job runs `npm test` (grep-verifiable)
-- [ ] 3.4 `npm run lint` and `npm run build` pass
+- [x] 3.1 `grep -rn FIXTURE_POOL src/ test/` returns nothing; `src/lib/fixture-pool.ts` no longer exists
+- [x] 3.2 `npm test` passes with only the golden-pool determinism assertions
+- [x] 3.3 `.github/workflows/ci.yml` `ci` job runs `npm test` (grep-verifiable)
+- [x] 3.4 `npm run lint` and `npm run build` pass
 - [ ] 3.5 A no-op PR shows the `ci` job running and passing `npm test`
 
 #### Manual

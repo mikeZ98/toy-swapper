@@ -12,7 +12,7 @@ interface CounterpartyRow {
 /**
  * Reads the shared counterparty pool from `public.counterparties`, ordered by
  * `sort_order` so the evaluator's stable-sort tie-breaking stays byte-identical
- * to the v1 FIXTURE_POOL.
+ * to the original v1 pool ordering.
  *
  * The pool is required infrastructure: this throws on a null client, a query
  * error, or zero rows so the caller surfaces a 500 rather than silently
