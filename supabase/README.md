@@ -62,6 +62,41 @@ Four policies — one per operation (`select`, `insert`, `update`, `delete`). Al
 
 Read-only shared tables (e.g., F-02's counterparty pool) deviate: enable RLS, grant `select` to `anon, authenticated`, no per-row `user_id` scoping. Document the deviation in a comment on the policy.
 
+### Worked example — shared read-only table (`public.counterparties`, F-02)
+
+`migrations/20260530120000_counterparties.sql` is the canonical shared-read table. The shape:
+
+```sql
+create table public.counterparties (
+  id         text     primary key,   -- human slug, embedded verbatim in output
+  sort_order smallint not null unique,
+  name       text     not null,
+  -- ... domain columns ...
+  created_at timestamptz not null default now()
+);
+
+alter table public.counterparties enable row level security;
+
+create policy "counterparties_select_all"
+  on public.counterparties
+  for select to anon, authenticated
+  using (true);
+
+comment on policy "counterparties_select_all" on public.counterparties is
+  'AUDIT: intentional using(true). Shared, read-only seeded reference table with '
+  'no user-owned rows — every role may read every row. No write policies exist, '
+  'so it is immutable at runtime; only migrations (table owner, bypasses RLS) change it.';
+
+grant select on public.counterparties to anon, authenticated;
+```
+
+Key differences from the four-policy template:
+
+- **`using (true)` is allowed here** — but only with the `comment on policy` audit note explaining why (no user-owned rows). This is the one sanctioned exception to the no-`using (true)` rule.
+- **One policy, not four.** Only `select`. Omitting insert/update/delete policies (and their grants) makes the table immutable at runtime; the owner-run migration is the sole writer.
+- **No `user_id` column, PK may be a text slug** when the value is meaningful and appears in output.
+- **Seed in the migration, not `seed.sql`** — `seed.sql` runs only on local `db reset`, never on `db push`, so prod would otherwise have an empty table. A seeded-data migration is also an explicit determinism boundary (PRD NFR).
+
 ## Adding a new table — 5-step checklist
 
 1. **Name the migration** `YYYYMMDDHHmmss_<feature>.sql` (zero-padded UTC timestamp; per [`../CLAUDE.md`](../CLAUDE.md) convention).
