@@ -2,7 +2,7 @@
 change_id: postgres-rls-baseline
 roadmap_id: F-01
 title: Postgres + RLS baseline
-status: implemented
+status: impl_reviewed
 created: 2026-05-29
 updated: 2026-05-30
 prd_refs:
