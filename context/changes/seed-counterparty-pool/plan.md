@@ -269,24 +269,24 @@ Complete the migration: delete `src/lib/fixture-pool.ts`, remove the now-impossi
 
 #### Automated
 
-- [x] 1.1 `20260530120000_counterparties.sql` applies cleanly from a fresh DB with no error
-- [x] 1.2 After apply, `count(*)` = 5 and `select id ... order by sort_order` matches the golden sequence
-- [x] 1.3 `npx supabase test db` (or docker-exec pgTAP) passes including `counterparties.test.sql`
-- [x] 1.4 `npm run lint` and `npm run build` still pass
+- [x] 1.1 `20260530120000_counterparties.sql` applies cleanly from a fresh DB with no error — 492f985
+- [x] 1.2 After apply, `count(*)` = 5 and `select id ... order by sort_order` matches the golden sequence — 492f985
+- [x] 1.3 `npx supabase test db` (or docker-exec pgTAP) passes including `counterparties.test.sql` — 492f985
+- [x] 1.4 `npm run lint` and `npm run build` still pass — 492f985
 
 #### Manual
 
-- [x] 1.5 Reviewer confirms the 5 rows are byte-identical to `src/lib/fixture-pool.ts`
-- [x] 1.6 As `anon`, rows are readable; insert/update/delete denied
+- [x] 1.5 Reviewer confirms the 5 rows are byte-identical to `src/lib/fixture-pool.ts` — 492f985
+- [x] 1.6 As `anon`, rows are readable; insert/update/delete denied — 492f985
 
 ### Phase 2: Read flip with determinism gate
 
 #### Automated
 
-- [ ] 2.1 `npm test` passes: all representative contracts match their golden `.md` byte-for-byte
-- [ ] 2.2 Pre-deletion equivalence assertion (`FIXTURE_POOL` == golden pool) passes
-- [ ] 2.3 `npm run lint` and `npm run build` pass with the new signature and wiring
-- [ ] 2.4 Type-check is clean (signature change propagated)
+- [x] 2.1 `npm test` passes: all representative contracts match their golden `.md` byte-for-byte
+- [x] 2.2 Pre-deletion equivalence assertion (`FIXTURE_POOL` == golden pool) passes
+- [x] 2.3 `npm run lint` and `npm run build` pass with the new signature and wiring
+- [x] 2.4 Type-check is clean (signature change propagated)
 
 #### Manual
 

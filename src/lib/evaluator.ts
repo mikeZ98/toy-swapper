@@ -11,7 +11,6 @@ import type {
   UnclassifiedItem,
   Verdict,
 } from "@/types";
-import { FIXTURE_POOL } from "@/lib/fixture-pool";
 
 const KEYWORD_MAP: { patterns: RegExp[]; category: string; base_pln: number }[] = [
   { patterns: [/\bduplo\b/i], category: "blocks-duplo", base_pln: 35 },
@@ -369,13 +368,18 @@ export interface EvaluateOptions {
   thresholdPct: number;
 }
 
-export async function evaluate(give: string, want: string, opts: EvaluateOptions): Promise<EvaluateResponse> {
+export async function evaluate(
+  give: string,
+  want: string,
+  pool: Counterparty[],
+  opts: EvaluateOptions,
+): Promise<EvaluateResponse> {
   const preferLLM = Boolean(opts.apiKey);
   const processOpts: ProcessOptions = { apiKey: opts.apiKey, baseURL: opts.baseURL, preferLLM };
   const { processed: op_give, source } = await processList(give, processOpts);
   const { processed: op_want } = await processList(want, processOpts);
 
-  const match = await findBestMatch(op_give, op_want, FIXTURE_POOL, processOpts);
+  const match = await findBestMatch(op_give, op_want, pool, processOpts);
   if (!match) {
     return {
       contract: renderNoMatchContract(op_give, op_want),
