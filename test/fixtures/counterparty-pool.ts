@@ -2,11 +2,9 @@ import type { Counterparty } from "@/types";
 
 /**
  * Golden snapshot of the seeded counterparty pool, byte-identical to the rows in
- * `supabase/migrations/20260530120000_counterparties.sql` (and, until Phase 3,
- * to `src/lib/fixture-pool.ts`). Lets the determinism suite run pure — no DB —
- * in CI. The pgTAP test (`supabase/tests/counterparties.test.sql`) ties the DB
- * rows to this same data; the Phase-2 equivalence assertion ties this to the
- * v1 FIXTURE_POOL before that module is deleted.
+ * `supabase/migrations/20260530120000_counterparties.sql`. Lets the determinism
+ * suite run pure — no DB — in CI. The pgTAP test
+ * (`supabase/tests/counterparties.test.sql`) ties the DB rows to this same data.
  */
 export const GOLDEN_POOL: Counterparty[] = [
   {
