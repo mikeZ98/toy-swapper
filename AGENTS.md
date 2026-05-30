@@ -32,7 +32,8 @@ ToySwapper is an Astro 6 + React 19 + Cloudflare-Workers app that turns two pare
 ## Commits & CI
 
 - Commit prefix style: not yet established (initial commit pending). When deciding, prefer Conventional Commits.
-- CI gate: GitHub Actions `lint + build` on push/PR to `master` (see @.github/workflows/ci.yml). The starter's CI expects `SUPABASE_URL` / `SUPABASE_KEY` repo secrets even though ToySwapper does not use Supabase at runtime — wire dummy values for now.
+- CI gate: GitHub Actions runs two parallel jobs on push/PR to `master` (see @.github/workflows/ci.yml) — `ci` (`lint + build`, needs `SUPABASE_URL` / `SUPABASE_KEY` repo secrets) and `db` (boots local Postgres, runs `supabase db lint` + `supabase test db`).
+- Migrations: every PR runs `supabase db lint` + `supabase test db`; merge to `master` runs `supabase db push` against prod (needs `SUPABASE_PROJECT_REF` / `SUPABASE_ACCESS_TOKEN` / `SUPABASE_DB_PASSWORD` secrets — see README "CI"). New migration files MUST follow @supabase/README.md and ship with a pgTAP test under `supabase/tests/`.
 - LLM endpoint reads `OPENAI_API_KEY` via `astro:env/server`. Absent the key, the evaluator falls back to a deterministic stub (per the PRD determinism rule). Do not log raw user input/output in production paths.
 
 For depth on Astro / Supabase / shadcn conventions inherited from the starter, see @CLAUDE.md.

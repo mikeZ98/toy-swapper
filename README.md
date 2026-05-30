@@ -186,7 +186,20 @@ Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions runs two parallel jobs on every push and PR to `master`:
+
+- **`ci`** — `lint + build`. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
+- **`db`** — boots a local Postgres (`supabase db start`), runs `supabase db lint --level warning` and `supabase test db` (the pgTAP RLS suite). On pushes to `master` only, it then runs `supabase db push --linked` to apply pending migrations to the production Supabase project **before** any deploy.
+
+### Repository secrets for the `db push` step
+
+The migration-push step needs three additional GitHub Actions secrets. **Set them before the next merge to `master`, or the `db push` step will fail and block deploys:**
+
+| Secret                  | Description                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| `SUPABASE_PROJECT_REF`  | The prod project's ref (the `<project-ref>` in its dashboard URL / `*.supabase.co` hostname).     |
+| `SUPABASE_ACCESS_TOKEN` | A personal access token from <https://supabase.com/dashboard/account/tokens>.                     |
+| `SUPABASE_DB_PASSWORD`  | The prod project's database password, set during project provisioning.                            |
 
 ## License
 

@@ -22,3 +22,28 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      # Boot a local Postgres + apply all migrations from supabase/migrations/.
+      - run: supabase db start
+      # Fail the job on lint errors AND warnings (catches duplicate function
+      # defs, missing security invoker, syntax errors before merge).
+      - run: supabase db lint --level warning
+      # Run the pgTAP suite under supabase/tests/ (the RLS contract test).
+      - run: supabase test db
+      # On merge to master only: apply pending migrations to the prod project
+      # before any deploy. Requires repo secrets (see README "CI").
+      - name: Push migrations to production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
+          supabase db push --linked

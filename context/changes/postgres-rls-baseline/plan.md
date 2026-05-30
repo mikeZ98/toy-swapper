@@ -335,23 +335,23 @@ The existing `ci` job (lint + build) is untouched and still runs for both PR and
 
 #### Automated
 
-- [x] 2.1 `supabase/tests/rls_template.test.sql` exists
-- [x] 2.2 `npx supabase test db` exits 0 against the local stack (verified-equivalent: pgTAP 9/9 ok via `docker exec … psql`, 0.088s; literal CLI blocked by local Colima host→54322 forward bug `~/.colima` shadowing XDG — rides Phase 3 CI)
-- [x] 2.3 `npm run db:test` exits 0 (script alias works) (verified-equivalent via same docker-exec pgTAP run; alias is `supabase test db`, blocked by the same local Colima forward bug — rides Phase 3 CI)
-- [x] 2.4 Test file contains at least one assertion of each shape: `has_function`, `results_eq`, `throws_ok`
-- [x] 2.5 `npm run lint` still passes
+- [x] 2.1 `supabase/tests/rls_template.test.sql` exists — 05cf933
+- [x] 2.2 `npx supabase test db` exits 0 against the local stack (verified-equivalent: pgTAP 9/9 ok via `docker exec … psql`, 0.088s; literal CLI blocked by local Colima host→54322 forward bug `~/.colima` shadowing XDG — rides Phase 3 CI) — 05cf933
+- [x] 2.3 `npm run db:test` exits 0 (script alias works) (verified-equivalent via same docker-exec pgTAP run; alias is `supabase test db`, blocked by the same local Colima forward bug — rides Phase 3 CI) — 05cf933
+- [x] 2.4 Test file contains at least one assertion of each shape: `has_function`, `results_eq`, `throws_ok` — 05cf933
+- [x] 2.5 `npm run lint` still passes — 05cf933
 
 #### Manual
 
-- [x] 2.6 A reviewer can deliberately break a policy and observe the pgTAP test fail in the expected way
-- [x] 2.7 The test runs in under 5 seconds locally
+- [x] 2.6 A reviewer can deliberately break a policy and observe the pgTAP test fail in the expected way — 05cf933
+- [x] 2.7 The test runs in under 5 seconds locally — 05cf933
 
 ### Phase 3: CI/CD integration — lint, test, push
 
 #### Automated
 
-- [ ] 3.1 `.github/workflows/ci.yml` defines a `db` job with `supabase/setup-cli@v1`, `db start`, `db lint`, and `test db` steps
-- [ ] 3.2 The `db push` step is conditional on `github.event_name == 'push' && github.ref == 'refs/heads/master'`
+- [x] 3.1 `.github/workflows/ci.yml` defines a `db` job with `supabase/setup-cli@v1`, `db start`, `db lint`, and `test db` steps
+- [x] 3.2 The `db push` step is conditional on `github.event_name == 'push' && github.ref == 'refs/heads/master'`
 - [ ] 3.3 A no-op PR passes both `ci` and `db` jobs
 - [ ] 3.4 A PR with a deliberately broken migration fails the `db lint` step
 
