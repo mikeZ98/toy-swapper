@@ -297,10 +297,10 @@ Complete the migration: delete `src/lib/fixture-pool.ts`, remove the now-impossi
 
 #### Automated
 
-- [x] 3.1 `grep -rn FIXTURE_POOL src/ test/` returns nothing; `src/lib/fixture-pool.ts` no longer exists
-- [x] 3.2 `npm test` passes with only the golden-pool determinism assertions
-- [x] 3.3 `.github/workflows/ci.yml` `ci` job runs `npm test` (grep-verifiable)
-- [x] 3.4 `npm run lint` and `npm run build` pass
+- [x] 3.1 `grep -rn FIXTURE_POOL src/ test/` returns nothing; `src/lib/fixture-pool.ts` no longer exists — bea4977
+- [x] 3.2 `npm test` passes with only the golden-pool determinism assertions — bea4977
+- [x] 3.3 `.github/workflows/ci.yml` `ci` job runs `npm test` (grep-verifiable) — bea4977
+- [x] 3.4 `npm run lint` and `npm run build` pass — bea4977
 - [ ] 3.5 A no-op PR shows the `ci` job running and passing `npm test`
 
 #### Manual
