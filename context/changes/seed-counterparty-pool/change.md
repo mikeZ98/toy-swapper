@@ -2,7 +2,7 @@
 change_id: seed-counterparty-pool
 roadmap_id: F-02
 title: Counterparty pool migrated to seeded table
-status: implementing
+status: implemented
 created: 2026-05-30
 updated: 2026-05-30
 prd_refs:
