@@ -350,8 +350,8 @@ The existing `ci` job (lint + build) is untouched and still runs for both PR and
 
 #### Automated
 
-- [x] 3.1 `.github/workflows/ci.yml` defines a `db` job with `supabase/setup-cli@v1`, `db start`, `db lint`, and `test db` steps
-- [x] 3.2 The `db push` step is conditional on `github.event_name == 'push' && github.ref == 'refs/heads/master'`
+- [x] 3.1 `.github/workflows/ci.yml` defines a `db` job with `supabase/setup-cli@v1`, `db start`, `db lint`, and `test db` steps — 150b4e5
+- [x] 3.2 The `db push` step is conditional on `github.event_name == 'push' && github.ref == 'refs/heads/master'` — 150b4e5
 - [ ] 3.3 A no-op PR passes both `ci` and `db` jobs
 - [ ] 3.4 A PR with a deliberately broken migration fails the `db lint` step
 

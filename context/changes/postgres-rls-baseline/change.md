@@ -2,9 +2,9 @@
 change_id: postgres-rls-baseline
 roadmap_id: F-01
 title: Postgres + RLS baseline
-status: implementing
+status: implemented
 created: 2026-05-29
-updated: 2026-05-29
+updated: 2026-05-30
 prd_refs:
   - NFR (RLS: per-operation, per-role policies, no `using (true)` bypass)
   - FR-016
