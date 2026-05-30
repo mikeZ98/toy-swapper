@@ -28,7 +28,7 @@ ToySwapper turns two parents' freeform descriptions of items they have and want 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
 | F-01 | postgres-rls-baseline | (foundation) Postgres reachable from the Workers runtime, first migration shipped, RLS contract for user-scoped tables documented | — | NFR (RLS), FR-016, FR-018 | done |
-| F-02 | seed-counterparty-pool | (foundation) counterparty pool lives in a seeded Postgres table; evaluator reads from DB; `src/lib/fixture-pool.ts` deleted; v1 determinism preserved byte-identically | F-01 | FR-007, FR-017, NFR (determinism preserved across v1→v2) | proposed |
+| F-02 | seed-counterparty-pool | (foundation) counterparty pool lives in a seeded Postgres table; evaluator reads from DB; `src/lib/fixture-pool.ts` deleted; v1 determinism preserved byte-identically | F-01 | FR-007, FR-017, NFR (determinism preserved across v1→v2) | done |
 | F-03 | structured-logging-baseline | (foundation) API routes emit structured logs for auth events, RLS denials, evaluator success/failure; errors observable in production | — | NFR (quality bias) | ready |
 | S-01 | gated-evaluator | sign in / sign out, and have `/` plus `POST /api/evaluate` gated behind a session | F-03 | US-03, FR-012, FR-013, FR-014, FR-015 | blocked |
 | S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | blocked |
@@ -83,7 +83,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced before S-03 because history rows reference `counterparty_id`. Risk: silent drift between the seeded rows and the v1 module breaks determinism; mitigated by a determinism regression test that runs the v1 fixture-based evaluations against the new read path before deleting the module.
-- **Status:** proposed
+- **Status:** done
 
 ### F-03: Structured logging baseline
 
@@ -170,3 +170,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived.)
 
 - **F-01: (foundation) Postgres reachable from the Workers runtime, first migration shipped, RLS contract for user-scoped tables documented and enforced** — Archived 2026-05-30 → `context/archive/2026-05-29-postgres-rls-baseline/`. Lesson: —.
+- **F-02: (foundation) counterparties live in a Postgres table seeded by a database migration with byte-identical fields to the v1 `FIXTURE_POOL`; the evaluator reads counterparties from the database, not from `src/lib/fixture-pool.ts`; the module is deleted; v1 determinism is preserved (same operator inputs produce byte-identical Markdown contracts).** — Archived 2026-05-30 → `context/archive/2026-05-30-seed-counterparty-pool/`. Lesson: —.
