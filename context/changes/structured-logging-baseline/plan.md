@@ -271,25 +271,25 @@ No schema or data migration. `LOG_LEVEL` is optional (default `info`); add it to
 ### Phase 2: Middleware integration
 
 #### Automated
-- [x] 2.1 Type checking passes: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Existing tests still pass: `npm test`
+- [x] 2.1 Type checking passes: `npm run build` — 6acc562
+- [x] 2.2 Linting passes: `npm run lint` — 6acc562
+- [x] 2.3 Existing tests still pass: `npm test` — 6acc562
 
 #### Manual
-- [x] 2.4 `curl -i` to `/` returns an `x-request-id` header
-- [x] 2.5 `/dashboard` while signed out logs one `auth_required` line and redirects
-- [x] 2.6 Inbound `x-request-id` is echoed back unchanged
+- [x] 2.4 `curl -i` to `/` returns an `x-request-id` header — 6acc562
+- [x] 2.5 `/dashboard` while signed out logs one `auth_required` line and redirects — 6acc562
+- [x] 2.6 Inbound `x-request-id` is echoed back unchanged — 6acc562
 
 ### Phase 3: Route + lib instrumentation
 
 #### Automated
-- [ ] 3.1 Type checking passes: `npm run build`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 All tests pass: `npm test`
-- [ ] 3.4 Existing evaluator/determinism tests still pass: `npm test`
+- [x] 3.1 Type checking passes: `npm run build`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 All tests pass: `npm test`
+- [x] 3.4 Existing evaluator/determinism tests still pass: `npm test`
 
 #### Manual
-- [ ] 3.5 Successful `POST /api/evaluate` logs one `evaluate.success` line with `duration_ms` + shared `request_id`, no give/want contents
-- [ ] 3.6 Failing sign-in logs `auth.signin` `failure` with a `reason` and no email
-- [ ] 3.7 Successful sign-in/sign-out log `auth.signin`/`auth.signout` with a `user_id`
-- [ ] 3.8 Forced LLM-path failure logs `evaluate.llm_fallback` with the request's `request_id`
+- [x] 3.5 Successful `POST /api/evaluate` logs one `evaluate.success` line with `duration_ms` + shared `request_id`, no give/want contents
+- [x] 3.6 Failing sign-in logs `auth.signin` `failure` with a `reason` and no email
+- [x] 3.7 Successful sign-in/sign-out log `auth.signin`/`auth.signout` with a `user_id`
+- [x] 3.8 Forced LLM-path failure logs `evaluate.llm_fallback` with the request's `request_id`
