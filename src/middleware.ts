@@ -38,6 +38,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   const response = await next();
-  response.headers.set("x-request-id", requestId);
+  try {
+    response.headers.set("x-request-id", requestId);
+  } catch {
+    // Some adapter responses (e.g. certain static/HEAD/304 cases) expose
+    // immutable headers; the correlation id is best-effort, never fatal.
+  }
   return response;
 });
