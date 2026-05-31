@@ -30,7 +30,9 @@ export async function getCounterpartyPool(client: SupabaseClient | null): Promis
     .order("sort_order", { ascending: true });
 
   if (error) {
-    throw new Error(`counterparty pool unavailable: ${error.message}`);
+    // Preserve the Postgres error code (e.g. 42501 RLS denial) via `cause` so
+    // callers can classify it — see isRlsDenied in @/lib/log.
+    throw new Error(`counterparty pool unavailable: ${error.message}`, { cause: { code: error.code } });
   }
   if (data.length === 0) {
     throw new Error("counterparty pool unavailable: zero rows returned");
