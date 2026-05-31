@@ -283,13 +283,13 @@ No schema or data migration. `LOG_LEVEL` is optional (default `info`); add it to
 ### Phase 3: Route + lib instrumentation
 
 #### Automated
-- [x] 3.1 Type checking passes: `npm run build`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 All tests pass: `npm test`
-- [x] 3.4 Existing evaluator/determinism tests still pass: `npm test`
+- [x] 3.1 Type checking passes: `npm run build` — da87152
+- [x] 3.2 Linting passes: `npm run lint` — da87152
+- [x] 3.3 All tests pass: `npm test` — da87152
+- [x] 3.4 Existing evaluator/determinism tests still pass: `npm test` — da87152
 
 #### Manual
-- [x] 3.5 Successful `POST /api/evaluate` logs one `evaluate.success` line with `duration_ms` + shared `request_id`, no give/want contents
-- [x] 3.6 Failing sign-in logs `auth.signin` `failure` with a `reason` and no email
-- [x] 3.7 Successful sign-in/sign-out log `auth.signin`/`auth.signout` with a `user_id`
-- [x] 3.8 Forced LLM-path failure logs `evaluate.llm_fallback` with the request's `request_id`
+- [x] 3.5 Successful `POST /api/evaluate` logs one `evaluate.success` line with `duration_ms` + shared `request_id`, no give/want contents — da87152
+- [x] 3.6 Failing sign-in logs `auth.signin` `failure` with a `reason` and no email — da87152
+- [x] 3.7 Successful sign-in/sign-out log `auth.signin`/`auth.signout` with a `user_id` — da87152
+- [x] 3.8 Forced LLM-path failure logs `evaluate.llm_fallback` with the request's `request_id` — da87152
