@@ -1,9 +1,13 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
+import { createLogger, resolveRequestId } from "@/lib/log";
 
 const PROTECTED_ROUTES = ["/dashboard"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  const requestId = resolveRequestId(context.request.headers);
+  context.locals.requestId = requestId;
+
   const supabase = createClient(context.request.headers, context.cookies);
 
   if (supabase) {
@@ -15,11 +19,25 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.user = null;
   }
 
+  // Build the request-bound logger after the user is resolved so user_id is
+  // populated. Every route reads this via locals.log.
+  context.locals.log = createLogger({
+    request_id: requestId,
+    route: context.url.pathname,
+    method: context.request.method,
+    user_id: context.locals.user?.id ?? null,
+  });
+
   if (PROTECTED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
     if (!context.locals.user) {
-      return context.redirect("/auth/signin");
+      context.locals.log.warn("auth_required", { outcome: "failure" });
+      const redirect = context.redirect("/auth/signin");
+      redirect.headers.set("x-request-id", requestId);
+      return redirect;
     }
   }
 
-  return next();
+  const response = await next();
+  response.headers.set("x-request-id", requestId);
+  return response;
 });

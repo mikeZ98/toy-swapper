@@ -260,25 +260,25 @@ No schema or data migration. `LOG_LEVEL` is optional (default `info`); add it to
 ### Phase 1: Logger core + config + types
 
 #### Automated
-- [x] 1.1 Type checking passes: `npm run build`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Logger unit tests pass: `npm test`
+- [x] 1.1 Type checking passes: `npm run build` — 00e9d63
+- [x] 1.2 Linting passes: `npm run lint` — 00e9d63
+- [x] 1.3 Logger unit tests pass: `npm test` — 00e9d63
 
 #### Manual
-- [x] 1.4 `src/lib/log.ts` exports `createLogger`, `baseLogger`, `resolveRequestId`, `isRlsDenied`, `Logger`, `LogLevel`
-- [x] 1.5 A scratch `createLogger(...).info("x", { email })` prints a JSON line with no `email` key
+- [x] 1.4 `src/lib/log.ts` exports `createLogger`, `baseLogger`, `resolveRequestId`, `isRlsDenied`, `Logger`, `LogLevel` — 00e9d63
+- [x] 1.5 A scratch `createLogger(...).info("x", { email })` prints a JSON line with no `email` key — 00e9d63
 
 ### Phase 2: Middleware integration
 
 #### Automated
-- [ ] 2.1 Type checking passes: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Existing tests still pass: `npm test`
+- [x] 2.1 Type checking passes: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Existing tests still pass: `npm test`
 
 #### Manual
-- [ ] 2.4 `curl -i` to `/` returns an `x-request-id` header
-- [ ] 2.5 `/dashboard` while signed out logs one `auth_required` line and redirects
-- [ ] 2.6 Inbound `x-request-id` is echoed back unchanged
+- [x] 2.4 `curl -i` to `/` returns an `x-request-id` header
+- [x] 2.5 `/dashboard` while signed out logs one `auth_required` line and redirects
+- [x] 2.6 Inbound `x-request-id` is echoed back unchanged
 
 ### Phase 3: Route + lib instrumentation
 
