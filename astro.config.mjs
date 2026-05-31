@@ -21,6 +21,7 @@ export default defineConfig({
       OPENAI_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
       OPENAI_API_BASE: envField.string({ context: "server", access: "public", optional: true }),
       FAIRNESS_THRESHOLD_PCT: envField.number({ context: "server", access: "public", optional: true, default: 20 }),
+      LOG_LEVEL: envField.string({ context: "server", access: "public", optional: true, default: "info" }),
     },
   },
 });
