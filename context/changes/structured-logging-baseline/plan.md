@@ -253,6 +253,14 @@ No schema or data migration. `LOG_LEVEL` is optional (default `info`); add it to
 - Existing log site to fold in: `src/lib/evaluator.ts:188`
 - Locals extension point: `src/env.d.ts`
 
+## Implementation Addenda (2026-05-31, post impl-review)
+
+Accepted deviations surfaced during implementation and the F-03 review (finding F1):
+
+- **Tests live in `test/`** (repo convention), reusing the existing `vitest.config.ts` rather than a new one. The config gained an `astro:env/server` alias → `test/stubs/astro-env-server.ts` so units that read server env resolve under Vitest.
+- **`src/lib/auth-log.ts`** extracts the Supabase error→category map (`categorizeAuthError`) shared by `signin`/`signup`, instead of inlining it per route (DRY).
+- **`createLogger(base, { level })`** carries a test-only `level` override so level filtering is testable without per-test env re-mocking; production still reads `LOG_LEVEL`.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles. See `references/progress-format.md`.

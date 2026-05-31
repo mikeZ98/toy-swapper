@@ -69,7 +69,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-/** Drop denylisted PII keys (shallow) and normalize any Error into {name,message,stack}. */
+/**
+ * Drop denylisted PII keys and normalize any Error into {name,message,stack}.
+ *
+ * NOTE: redaction is intentionally SHALLOW — only top-level keys are checked.
+ * Call sites must pass flat, PII-free fields (e.g. `user_id`, never a nested
+ * `{ user: { email } }`). This is a backstop for the call-site discipline, not
+ * a deep sanitizer.
+ */
 function sanitize(fields: LogFields): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(fields)) {
