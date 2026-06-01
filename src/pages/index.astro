@@ -1,10 +1,28 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { createClient } from "@/lib/supabase";
+import { getUserLists } from "@/lib/user-lists";
 
-const { user } = Astro.locals;
+const { user, log } = Astro.locals;
 
 const sampleGive = "klocki LEGO Duplo dobry stan; bluza H&M rozmiar 92 jak nowa; książka 'Mała Mi' twarda oprawa";
 const sampleWant = "lalka Barbie z domkiem; kredki 24 szt; puzzle Disney";
+
+// Pre-fill the textareas with the user's last-saved lists (FR-016). Best-effort:
+// a load failure (or an account that has never evaluated) falls back to the
+// sample text so the evaluator never breaks over a persistence hiccup.
+let saved: { give: string; want: string } | null = null;
+if (user) {
+  try {
+    const supabase = createClient(Astro.request.headers, Astro.cookies);
+    saved = await getUserLists(supabase, user.id);
+  } catch (err) {
+    log.warn("user_lists.load_failed", { outcome: "failure", error: err });
+  }
+}
+
+const initialGive = saved?.give ?? sampleGive;
+const initialWant = saved?.want ?? sampleWant;
 ---
 
 <Layout title="ToySwapper">
@@ -73,7 +91,7 @@ const sampleWant = "lalka Barbie z domkiem; kredki 24 szt; puzzle Disney";
                 rows="6"
                 placeholder="LEGO Duplo, bluza H&M..."
                 class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
-                >{sampleGive}</textarea
+                >{initialGive}</textarea
               >
             </label>
             <label class="flex flex-col gap-2">
@@ -84,7 +102,7 @@ const sampleWant = "lalka Barbie z domkiem; kredki 24 szt; puzzle Disney";
                 rows="6"
                 placeholder="lalka Barbie, kredki..."
                 class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
-                >{sampleWant}</textarea
+                >{initialWant}</textarea
               >
             </label>
           </div>

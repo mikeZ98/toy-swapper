@@ -241,23 +241,23 @@ New migration only. No changes to existing migrations or the counterparties seed
 
 #### Automated
 
-- [x] 2.1 All tests pass: `npm test`
-- [x] 2.2 Type checking passes: `npm run build`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 All tests pass: `npm test` — 773ab3d
+- [x] 2.2 Type checking passes: `npm run build` — 773ab3d
+- [x] 2.3 Linting passes: `npm run lint` — 773ab3d
 
 #### Manual
 
-- [x] 2.4 Run evaluator with Account A → `user_lists` row created/updated in Studio; Account B → no row visible
+- [x] 2.4 Run evaluator with Account A → `user_lists` row created/updated in Studio; Account B → no row visible — 773ab3d
 
 ### Phase 3: SSR pre-fill on the evaluator page
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npm run build`
-- [ ] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run build`
+- [x] 3.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.3 Sign in → run evaluator → sign out → sign back in → textareas pre-filled with previous strings
-- [ ] 3.4 Fresh account → sample text shown (empty state)
-- [ ] 3.5 Clear button → textareas empty in session; reload → textareas pre-filled from DB (save not cleared)
+- [x] 3.3 Sign in → run evaluator → sign out → sign back in → textareas pre-filled with previous strings
+- [x] 3.4 Fresh account → sample text shown (empty state)
+- [x] 3.5 Clear button → textareas empty in session; reload → textareas pre-filled from DB (save not cleared)
