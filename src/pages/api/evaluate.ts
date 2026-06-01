@@ -5,6 +5,7 @@ import { OPENAI_API_KEY, OPENAI_API_BASE, FAIRNESS_THRESHOLD_PCT } from "astro:e
 import { evaluate } from "@/lib/evaluator";
 import { createClient } from "@/lib/supabase";
 import { getCounterpartyPool } from "@/lib/counterparties";
+import { saveUserLists } from "@/lib/user-lists";
 import { isRlsDenied } from "@/lib/log";
 
 export const prerender = false;
@@ -49,6 +50,18 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
     });
     // Log the outcome only — never the give/want contents.
     log.info("evaluate.success", { outcome: "success", duration_ms: Date.now() - t0 });
+
+    // Persist the user's lists for pre-fill on return (FR-016). Best-effort:
+    // a save failure must never hide the evaluation result the user just got.
+    // The route is gated, so locals.user is always present here.
+    if (locals.user) {
+      try {
+        await saveUserLists(supabase, locals.user.id, parsed.data.give, parsed.data.want);
+      } catch (saveErr) {
+        log.warn("user_lists.save_failed", { outcome: "failure", error: saveErr });
+      }
+    }
+
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "content-type": "application/json" },
