@@ -5,6 +5,7 @@ import { OPENAI_API_KEY, OPENAI_API_BASE, FAIRNESS_THRESHOLD_PCT } from "astro:e
 import { evaluate } from "@/lib/evaluator";
 import { createClient } from "@/lib/supabase";
 import { getCounterpartyPool } from "@/lib/counterparties";
+import { isRlsDenied } from "@/lib/log";
 
 export const prerender = false;
 
@@ -14,7 +15,8 @@ const RequestSchema = z.object({
   threshold_pct: z.number().min(1).max(99).optional(),
 });
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies, locals }) => {
+  const log = locals.log;
   let payload: unknown;
   try {
     payload = await request.json();
@@ -35,6 +37,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   const thresholdPct = parsed.data.threshold_pct ?? FAIRNESS_THRESHOLD_PCT;
 
+  const t0 = Date.now();
   try {
     const supabase = createClient(request.headers, cookies);
     const pool = await getCounterpartyPool(supabase);
@@ -42,12 +45,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       apiKey: OPENAI_API_KEY,
       baseURL: OPENAI_API_BASE,
       thresholdPct,
+      logger: log,
     });
+    // Log the outcome only — never the give/want contents.
+    log.info("evaluate.success", { outcome: "success", duration_ms: Date.now() - t0 });
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "content-type": "application/json" },
     });
   } catch (err) {
+    const event = isRlsDenied(err) ? "db.rls_denied" : "evaluate.failure";
+    log.error(event, { outcome: "failure", duration_ms: Date.now() - t0, error: err });
     const message = err instanceof Error ? err.message : String(err);
     return new Response(JSON.stringify({ error: "evaluator failed", message }), {
       status: 500,

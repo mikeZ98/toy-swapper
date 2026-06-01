@@ -11,6 +11,7 @@ import type {
   UnclassifiedItem,
   Verdict,
 } from "@/types";
+import { baseLogger, type Logger } from "@/lib/log";
 
 const KEYWORD_MAP: { patterns: RegExp[]; category: string; base_pln: number }[] = [
   { patterns: [/\bduplo\b/i], category: "blocks-duplo", base_pln: 35 },
@@ -162,6 +163,7 @@ interface ProcessOptions {
   apiKey?: string;
   baseURL?: string;
   preferLLM: boolean;
+  logger?: Logger;
 }
 
 type Source = "llm" | "stub" | "llm-failed-fallback";
@@ -185,10 +187,9 @@ async function processList(text: string, opts: ProcessOptions): Promise<{ proces
     processedCache.set(llmKey, processed);
     return { processed, source: "llm" };
   } catch (err) {
-    console.warn(
-      "[evaluator] LLM standardization failed; falling back to stub:",
-      err instanceof Error ? err.message : err,
-    );
+    (opts.logger ?? baseLogger).warn("evaluate.llm_fallback", {
+      reason: err instanceof Error ? err.message : "unknown error",
+    });
     const fbKey = `stub::${text}`;
     const fbCached = processedCache.get(fbKey);
     if (fbCached) return { processed: fbCached, source: "llm-failed-fallback" };
@@ -366,6 +367,8 @@ export interface EvaluateOptions {
   apiKey?: string;
   baseURL?: string;
   thresholdPct: number;
+  /** Request-bound logger; the LLM-fallback warning is correlated through it. */
+  logger?: Logger;
 }
 
 export async function evaluate(
@@ -375,7 +378,7 @@ export async function evaluate(
   opts: EvaluateOptions,
 ): Promise<EvaluateResponse> {
   const preferLLM = Boolean(opts.apiKey);
-  const processOpts: ProcessOptions = { apiKey: opts.apiKey, baseURL: opts.baseURL, preferLLM };
+  const processOpts: ProcessOptions = { apiKey: opts.apiKey, baseURL: opts.baseURL, preferLLM, logger: opts.logger };
   const { processed: op_give, source } = await processList(give, processOpts);
   const { processed: op_want } = await processList(want, processOpts);
 
