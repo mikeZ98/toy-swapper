@@ -1,8 +1,15 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
 import { createLogger, resolveRequestId } from "@/lib/log";
+import { safeRedirectPath } from "@/lib/redirect";
 
-const PROTECTED_ROUTES = ["/dashboard"];
+// Routes that require a Supabase session (S-01). `/` is matched exactly so the
+// gate never catches `/auth/*` or static assets; the rest match the path or a
+// `/`-bounded sub-path. Pages redirect to sign-in; `/api/*` returns 401 JSON.
+function isGated(pathname: string): boolean {
+  if (pathname === "/") return true;
+  return ["/dashboard", "/api/evaluate"].some((route) => pathname === route || pathname.startsWith(route + "/"));
+}
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const requestId = resolveRequestId(context.request.headers);
@@ -28,13 +35,23 @@ export const onRequest = defineMiddleware(async (context, next) => {
     user_id: context.locals.user?.id ?? null,
   });
 
-  if (PROTECTED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
-    if (!context.locals.user) {
-      context.locals.log.warn("auth_required", { outcome: "failure" });
-      const redirect = context.redirect("/auth/signin");
-      redirect.headers.set("x-request-id", requestId);
-      return redirect;
+  if (!context.locals.user && isGated(context.url.pathname)) {
+    context.locals.log.warn("auth_required", { outcome: "failure" });
+
+    // API requests get JSON 401 — an HTML 302 to a JSON fetch is a silent
+    // client failure. Page requests get a redirect to sign-in carrying the
+    // original (sanitized) target so the user lands back where they headed.
+    if (context.url.pathname.startsWith("/api/")) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { "content-type": "application/json", "x-request-id": requestId },
+      });
     }
+
+    const target = safeRedirectPath(context.url.pathname + context.url.search);
+    const redirect = context.redirect(`/auth/signin?redirect=${encodeURIComponent(target)}`);
+    redirect.headers.set("x-request-id", requestId);
+    return redirect;
   }
 
   const response = await next();
