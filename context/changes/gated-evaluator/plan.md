@@ -242,13 +242,13 @@ No schema or data migration. Behavioral change only: `/` and `/api/evaluate` now
 ### Phase 3: Sign-in redirect honoring + client 401 + sign-out on `/`
 
 #### Automated
-- [x] 3.1 All tests pass: `npm test`
-- [x] 3.2 Type checking passes: `npm run build`
-- [x] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 All tests pass: `npm test` — 726af09
+- [x] 3.2 Type checking passes: `npm run build` — 726af09
+- [x] 3.3 Linting passes: `npm run lint` — 726af09
 
 #### Manual
-- [x] 3.4 Deep link `/dashboard` preserved through sign-in (land on `/dashboard`)
-- [x] 3.5 Anon `/` → sign in → land on `/`
-- [x] 3.6 Failed sign-in keeps the `redirect` target across the error bounce
-- [x] 3.7 `?redirect=//evil.com` results in landing on `/`, not the external site
-- [x] 3.8 Sign-out from `/` works; expired-session 401 navigates the page to `/auth/signin?redirect=/`
+- [x] 3.4 Deep link `/dashboard` preserved through sign-in (land on `/dashboard`) — 726af09
+- [x] 3.5 Anon `/` → sign in → land on `/` — 726af09
+- [x] 3.6 Failed sign-in keeps the `redirect` target across the error bounce — 726af09
+- [x] 3.7 `?redirect=//evil.com` results in landing on `/`, not the external site — 726af09
+- [x] 3.8 Sign-out from `/` works; expired-session 401 navigates the page to `/auth/signin?redirect=/` — 726af09
