@@ -1,10 +1,10 @@
 ---
 change_id: restore-saved-lists
 title: Restore saved lists
-status: implemented
+status: archived
 created: 2026-06-01
 updated: 2026-06-01
-archived_at: null
+archived_at: 2026-06-01T20:19:38Z
 ---
 
 ## Notes
