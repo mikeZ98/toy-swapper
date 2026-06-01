@@ -31,7 +31,7 @@ ToySwapper turns two parents' freeform descriptions of items they have and want 
 | F-02 | seed-counterparty-pool | (foundation) counterparty pool lives in a seeded Postgres table; evaluator reads from DB; `src/lib/fixture-pool.ts` deleted; v1 determinism preserved byte-identically | F-01 | FR-007, FR-017, NFR (determinism preserved across v1→v2) | done |
 | F-03 | structured-logging-baseline | (foundation) API routes emit structured logs for auth events, RLS denials, evaluator success/failure; errors observable in production | — | NFR (quality bias) | done |
 | S-01 | gated-evaluator | sign in / sign out, and have `/` plus `POST /api/evaluate` gated behind a session | F-03 | US-03, FR-012, FR-013, FR-014, FR-015 | done |
-| S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | blocked |
+| S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | done |
 | S-03 | evaluation-history | browse a list of their past contracts (most recent first), expand any row to see the original Markdown verbatim | F-01, F-02, S-01 | US-05, FR-018, FR-019 | proposed |
 
 ## Streams
@@ -124,7 +124,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - OQ-4 (save granularity — every keystroke debounced vs on submit vs on successful eval): determines the write path and the user-visible "did my draft survive a tab close" property. Owner: user. Block: yes.
 - **Risk:** This is the validation milestone — first slice to exercise RLS write+read on user-scoped data end-to-end. Risk: OQ-4 resolved as "on every keystroke" inflates write load and changes the schema choice (state vs event row); mitigated by treating OQ-4 as a hard blocker rather than guessing.
-- **Status:** blocked
+- **Status:** done
 
 ### S-03: Evaluation history
 
@@ -173,3 +173,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-02: (foundation) counterparties live in a Postgres table seeded by a database migration with byte-identical fields to the v1 `FIXTURE_POOL`; the evaluator reads counterparties from the database, not from `src/lib/fixture-pool.ts`; the module is deleted; v1 determinism is preserved (same operator inputs produce byte-identical Markdown contracts).** — Archived 2026-05-30 → `context/archive/2026-05-30-seed-counterparty-pool/`. Lesson: —.
 - **F-03: (foundation) API routes emit structured logs (request id, route, user id when known, outcome) for auth events, RLS denials, and evaluator success/failure; errors are observable in production via the chosen sink.** — Archived 2026-05-31 → `context/archive/2026-05-31-structured-logging-baseline/`. Lesson: —.
 - **S-01: user can sign up, sign in, and sign out; `/` and `POST /api/evaluate` are gated behind a session (redirect to `/auth/signin` for the page, HTTP 401 JSON for the API); the post-sign-in redirect preserves the original target.** — Archived 2026-06-01 → `context/archive/2026-05-31-gated-evaluator/`. Lesson: —.
+- **S-02: user can return to the evaluator in a new session (after sign-out and sign-back-in) and find their last-entered give-list and want-list pre-filled; a different signed-in account never sees another user's saved lists; an account that has never run the evaluator sees empty textareas with no error.** — Archived 2026-06-01 → `context/archive/2026-06-01-restore-saved-lists/`. Lesson: —.
