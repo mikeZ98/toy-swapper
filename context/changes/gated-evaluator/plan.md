@@ -220,24 +220,24 @@ No schema or data migration. Behavioral change only: `/` and `/api/evaluate` now
 ### Phase 1: Redirect-path sanitizer + tests
 
 #### Automated
-- [x] 1.1 Sanitizer tests pass: `npm test`
-- [x] 1.2 Type checking passes: `npm run build`
-- [x] 1.3 Linting passes: `npm run lint`
+- [x] 1.1 Sanitizer tests pass: `npm test` — cdbf9ad
+- [x] 1.2 Type checking passes: `npm run build` — cdbf9ad
+- [x] 1.3 Linting passes: `npm run lint` — cdbf9ad
 
 #### Manual
-- [x] 1.4 `safeRedirectPath("//evil.com")` → `/`; `safeRedirectPath("/dashboard")` → `/dashboard`
+- [x] 1.4 `safeRedirectPath("//evil.com")` → `/`; `safeRedirectPath("/dashboard")` → `/dashboard` — cdbf9ad
 
 ### Phase 2: Centralized middleware gate
 
 #### Automated
-- [ ] 2.1 Gate tests pass (anon page→302+redirect param, anon API→401 JSON, authed→pass, /auth/* not gated): `npm test`
-- [ ] 2.2 Type checking passes: `npm run build`
-- [ ] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Gate tests pass (anon page→302+redirect param, anon API→401 JSON, authed→pass, /auth/* not gated): `npm test`
+- [x] 2.2 Type checking passes: `npm run build`
+- [x] 2.3 Linting passes: `npm run lint`
 
 #### Manual
-- [ ] 2.4 Signed out, `/` redirects to `/auth/signin?redirect=%2F`
-- [ ] 2.5 Signed out, `POST /api/evaluate` returns 401 JSON with an `x-request-id` header
-- [ ] 2.6 `/auth/signin` and `/auth/signup` remain reachable while signed out (no redirect loop)
+- [x] 2.4 Signed out, `/` redirects to `/auth/signin?redirect=%2F`
+- [x] 2.5 Signed out, `POST /api/evaluate` returns 401 JSON with an `x-request-id` header
+- [x] 2.6 `/auth/signin` and `/auth/signup` remain reachable while signed out (no redirect loop)
 
 ### Phase 3: Sign-in redirect honoring + client 401 + sign-out on `/`
 
