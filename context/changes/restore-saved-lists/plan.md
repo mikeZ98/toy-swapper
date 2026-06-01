@@ -228,26 +228,26 @@ New migration only. No changes to existing migrations or the counterparties seed
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 pgTAP test passes: `npm run db:test`
-- [x] 1.3 Type checking passes: `npm run build`
-- [x] 1.4 Linting passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — b35c664
+- [x] 1.2 pgTAP test passes: `npm run db:test` — b35c664
+- [x] 1.3 Type checking passes: `npm run build` — b35c664
+- [x] 1.4 Linting passes: `npm run lint` — b35c664
 
 #### Manual
 
-- [x] 1.5 `public.user_lists` in Studio: RLS enabled, `UNIQUE(user_id)` constraint visible
+- [x] 1.5 `public.user_lists` in Studio: RLS enabled, `UNIQUE(user_id)` constraint visible — b35c664
 
 ### Phase 2: Service layer + evaluate-route wiring + vitest
 
 #### Automated
 
-- [ ] 2.1 All tests pass: `npm test`
-- [ ] 2.2 Type checking passes: `npm run build`
-- [ ] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 All tests pass: `npm test`
+- [x] 2.2 Type checking passes: `npm run build`
+- [x] 2.3 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 Run evaluator with Account A → `user_lists` row created/updated in Studio; Account B → no row visible
+- [x] 2.4 Run evaluator with Account A → `user_lists` row created/updated in Studio; Account B → no row visible
 
 ### Phase 3: SSR pre-fill on the evaluator page
 
