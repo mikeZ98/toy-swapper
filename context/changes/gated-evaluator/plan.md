@@ -230,25 +230,25 @@ No schema or data migration. Behavioral change only: `/` and `/api/evaluate` now
 ### Phase 2: Centralized middleware gate
 
 #### Automated
-- [x] 2.1 Gate tests pass (anon page→302+redirect param, anon API→401 JSON, authed→pass, /auth/* not gated): `npm test`
-- [x] 2.2 Type checking passes: `npm run build`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Gate tests pass (anon page→302+redirect param, anon API→401 JSON, authed→pass, /auth/* not gated): `npm test` — 79f6ce6
+- [x] 2.2 Type checking passes: `npm run build` — 79f6ce6
+- [x] 2.3 Linting passes: `npm run lint` — 79f6ce6
 
 #### Manual
-- [x] 2.4 Signed out, `/` redirects to `/auth/signin?redirect=%2F`
-- [x] 2.5 Signed out, `POST /api/evaluate` returns 401 JSON with an `x-request-id` header
-- [x] 2.6 `/auth/signin` and `/auth/signup` remain reachable while signed out (no redirect loop)
+- [x] 2.4 Signed out, `/` redirects to `/auth/signin?redirect=%2F` — 79f6ce6
+- [x] 2.5 Signed out, `POST /api/evaluate` returns 401 JSON with an `x-request-id` header — 79f6ce6
+- [x] 2.6 `/auth/signin` and `/auth/signup` remain reachable while signed out (no redirect loop) — 79f6ce6
 
 ### Phase 3: Sign-in redirect honoring + client 401 + sign-out on `/`
 
 #### Automated
-- [ ] 3.1 All tests pass: `npm test`
-- [ ] 3.2 Type checking passes: `npm run build`
-- [ ] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 All tests pass: `npm test`
+- [x] 3.2 Type checking passes: `npm run build`
+- [x] 3.3 Linting passes: `npm run lint`
 
 #### Manual
-- [ ] 3.4 Deep link `/dashboard` preserved through sign-in (land on `/dashboard`)
-- [ ] 3.5 Anon `/` → sign in → land on `/`
-- [ ] 3.6 Failed sign-in keeps the `redirect` target across the error bounce
-- [ ] 3.7 `?redirect=//evil.com` results in landing on `/`, not the external site
-- [ ] 3.8 Sign-out from `/` works; expired-session 401 navigates the page to `/auth/signin?redirect=/`
+- [x] 3.4 Deep link `/dashboard` preserved through sign-in (land on `/dashboard`)
+- [x] 3.5 Anon `/` → sign in → land on `/`
+- [x] 3.6 Failed sign-in keeps the `redirect` target across the error bounce
+- [x] 3.7 `?redirect=//evil.com` results in landing on `/`, not the external site
+- [x] 3.8 Sign-out from `/` works; expired-session 401 navigates the page to `/auth/signin?redirect=/`
