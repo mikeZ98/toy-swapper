@@ -253,11 +253,11 @@ New migration only. No changes to existing migrations or the counterparties seed
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npm run build`
-- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run build` — 80e911e
+- [x] 3.2 Linting passes: `npm run lint` — 80e911e
 
 #### Manual
 
-- [x] 3.3 Sign in → run evaluator → sign out → sign back in → textareas pre-filled with previous strings
-- [x] 3.4 Fresh account → sample text shown (empty state)
-- [x] 3.5 Clear button → textareas empty in session; reload → textareas pre-filled from DB (save not cleared)
+- [x] 3.3 Sign in → run evaluator → sign out → sign back in → textareas pre-filled with previous strings — 80e911e
+- [x] 3.4 Fresh account → sample text shown (empty state) — 80e911e
+- [x] 3.5 Clear button → textareas empty in session; reload → textareas pre-filled from DB (save not cleared) — 80e911e
