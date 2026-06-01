@@ -226,23 +226,23 @@ New migration only; no changes to existing migrations or seeds. No backfill — 
 ### Phase 1: DB migration + pgTAP test
 
 #### Automated
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 pgTAP test passes: `npm run db:test`
-- [x] 1.3 Type checking passes: `npm run build`
-- [x] 1.4 Linting passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — b1b81c6
+- [x] 1.2 pgTAP test passes: `npm run db:test` — b1b81c6
+- [x] 1.3 Type checking passes: `npm run build` — b1b81c6
+- [x] 1.4 Linting passes: `npm run lint` — b1b81c6
 
 #### Manual
-- [x] 1.5 `public.evaluations` in Studio: RLS enabled, select+insert only (no update/delete), FK to `counterparties` present
+- [x] 1.5 `public.evaluations` in Studio: RLS enabled, select+insert only (no update/delete), FK to `counterparties` present — b1b81c6
 
 ### Phase 2: Service layer + evaluate-route wiring + vitest
 
 #### Automated
-- [ ] 2.1 All tests pass: `npm test`
-- [ ] 2.2 Type checking passes: `npm run build`
-- [ ] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 All tests pass: `npm test`
+- [x] 2.2 Type checking passes: `npm run build`
+- [x] 2.3 Linting passes: `npm run lint`
 
 #### Manual
-- [ ] 2.4 Account A runs evaluator twice → two `evaluations` rows with correct fields; Account B → none
+- [x] 2.4 Account A runs evaluator twice → two `evaluations` rows with correct fields; Account B → none
 
 ### Phase 3: History page + middleware gate + nav
 
