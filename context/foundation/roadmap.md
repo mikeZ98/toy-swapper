@@ -44,6 +44,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 |---|---|---|---|
 | A | Data + persistence | `F-01` → `F-02` → `S-02` → `S-03` | The Postgres-and-RLS spine; `S-02` joins Stream B at `S-01` (needs the gate). Carries the north star. |
 | B | Auth gate + observability | `F-03` → `S-01` | Observability lands before the gate so RLS denials are observable from the first authenticated request. Joins Stream A via `S-02` and `S-03`. |
+| C | Frontend polish + auth views | `F-01` → (`S-06` ∥ `S-07`) | Independent presentation track. Both slices need only `F-01` (done) and run in parallel with each other — no shared code surface, no dependency on Streams A/B beyond the F-01 baseline. |
 
 ## Baseline
 
