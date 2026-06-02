@@ -1,5 +1,8 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import { getUserLists } from "@/lib/user-lists";
 
@@ -26,39 +29,29 @@ const initialWant = saved?.want ?? sampleWant;
 ---
 
 <Layout title="ToySwapper">
-  <div class="relative min-h-screen overflow-hidden bg-gradient-to-tr from-pink-50 via-indigo-50 to-amber-50">
+  <div class="bg-cosmic relative min-h-screen overflow-hidden">
     <div
-      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-400 opacity-30 blur-3xl"
+      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
     <div
-      class="absolute top-1/3 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-pink-400 opacity-30 blur-3xl"
+      class="absolute top-1/3 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-pink-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
     <div
-      class="absolute bottom-10 left-1/3 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-400 opacity-30 blur-3xl"
+      class="absolute bottom-10 left-1/3 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
 
     <main class="relative mx-auto max-w-3xl px-4 pt-16 pb-24">
-      <div class="mb-8 flex items-center justify-between text-sm">
-        <span class="text-slate-600">{user?.email}</span>
-        <form method="POST" action="/api/auth/signout">
-          <button
-            type="submit"
-            class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
-          >
-            Wyloguj
-          </button>
-        </form>
-      </div>
+      <Topbar />
 
-      <div class="mb-6 flex justify-center">
+      <div class="mt-8 mb-6 flex justify-center">
         <span
-          class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-1.5 text-sm font-medium text-purple-900 shadow-sm backdrop-blur-md"
+          class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-blue-100/80 shadow-sm backdrop-blur-md"
         >
           <span class="relative flex h-2 w-2">
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
@@ -69,39 +62,39 @@ const initialWant = saved?.want ?? sampleWant;
       </div>
 
       <h1
-        class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
+        class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
       >
         Daj zabawkom drugie życie ✨
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-slate-700 md:text-lg">
+      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-blue-100/70 md:text-lg">
         Wymieniaj się bezgotówkowo i bezpiecznie z rodzicami w swojej okolicy. Nasz system AI zadba o pełną uczciwość
         każdej oferty.
       </p>
 
       <div
-        class="mx-auto mt-10 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-12"
+        class="mx-auto mt-10 max-w-2xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-xl md:p-12"
       >
         <form id="evaluate-form" novalidate class="space-y-6">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700">Co dajesz</span>
+              <span class="text-sm font-medium text-blue-100/80">Co dajesz</span>
               <textarea
                 id="give"
                 name="give"
                 rows="6"
                 placeholder="LEGO Duplo, bluza H&M..."
-                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                class="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-sm text-white shadow-inner transition-all duration-200 placeholder:text-blue-100/40 focus:border-transparent focus:ring-2 focus:ring-purple-400 focus:outline-none"
                 >{initialGive}</textarea
               >
             </label>
             <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700">Co chcesz</span>
+              <span class="text-sm font-medium text-blue-100/80">Co chcesz</span>
               <textarea
                 id="want"
                 name="want"
                 rows="6"
                 placeholder="lalka Barbie, kredki..."
-                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                class="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-sm text-white shadow-inner transition-all duration-200 placeholder:text-blue-100/40 focus:border-transparent focus:ring-2 focus:ring-purple-400 focus:outline-none"
                 >{initialWant}</textarea
               >
             </label>
@@ -110,16 +103,24 @@ const initialWant = saved?.want ?? sampleWant;
           <button
             type="submit"
             id="run-btn"
-            class="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 px-8 py-4 text-center font-semibold text-white shadow-xl shadow-purple-500/20 transition-all duration-300 hover:scale-[1.01] hover:opacity-95 active:scale-[0.99]"
+            class:list={cn(
+              buttonVariants({ size: "lg" }),
+              "h-auto w-full rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 py-4 text-base font-semibold text-white shadow-lg shadow-purple-500/30 hover:scale-[1.01] hover:opacity-95 active:scale-[0.99]",
+            )}
           >
             Sprawdź uczciwość wymiany
           </button>
 
           <div class="flex items-center justify-between gap-3 text-sm">
-            <button type="button" id="clear-btn" class="text-slate-500 transition-colors hover:text-slate-800"
-              >Wyczyść</button
+            <button
+              type="button"
+              id="clear-btn"
+              class:list={cn(
+                buttonVariants({ variant: "link", size: "sm" }),
+                "h-auto px-0 text-blue-100/60 hover:text-blue-100",
+              )}>Wyczyść</button
             >
-            <span id="status-line" aria-live="polite" class="text-slate-500"></span>
+            <span id="status-line" aria-live="polite" class="text-blue-100/60"></span>
           </div>
         </form>
       </div>
