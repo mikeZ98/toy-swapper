@@ -247,11 +247,11 @@ New migration only; no changes to existing migrations or seeds. No backfill — 
 ### Phase 3: History page + middleware gate + nav
 
 #### Automated
-- [x] 3.1 Type checking passes: `npm run build`
-- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run build` — 3e7d6ff
+- [x] 3.2 Linting passes: `npm run lint` — 3e7d6ff
 
 #### Manual
-- [x] 3.3 After ≥1 eval → `/history` lists rows newest-first; expand shows contract byte-identical
-- [x] 3.4 Fresh account → `/history` empty-state (no crash)
-- [x] 3.5 Second account never sees the first account's history
-- [x] 3.6 Signed out → `/history` redirects to `/auth/signin?redirect=%2Fhistory`
+- [x] 3.3 After ≥1 eval → `/history` lists rows newest-first; expand shows contract byte-identical — 3e7d6ff
+- [x] 3.4 Fresh account → `/history` empty-state (no crash) — 3e7d6ff
+- [x] 3.5 Second account never sees the first account's history — 3e7d6ff
+- [x] 3.6 Signed out → `/history` redirects to `/auth/signin?redirect=%2Fhistory` — 3e7d6ff
