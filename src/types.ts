@@ -30,6 +30,8 @@ export interface Counterparty {
 
 export type Verdict = "FAIR" | "NEEDS BALANCING";
 
+export type EvaluationSource = "llm" | "stub" | "llm-failed-fallback";
+
 export interface EvaluateRequest {
   give: string;
   want: string;
@@ -41,5 +43,5 @@ export interface EvaluateResponse {
   verdict: Verdict | null;
   delta_pln: number | null;
   threshold_pct: number;
-  source: "llm" | "stub" | "llm-failed-fallback";
+  source: EvaluationSource;
 }

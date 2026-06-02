@@ -3,7 +3,7 @@ project: ToySwapper
 version: 1
 status: draft
 created: 2026-05-29
-updated: 2026-06-01
+updated: 2026-06-02
 prd_version: 2
 main_goal: quality
 top_blocker: decisions
@@ -32,7 +32,7 @@ ToySwapper turns two parents' freeform descriptions of items they have and want 
 | F-03 | structured-logging-baseline | (foundation) API routes emit structured logs for auth events, RLS denials, evaluator success/failure; errors observable in production | — | NFR (quality bias) | done |
 | S-01 | gated-evaluator | sign in / sign out, and have `/` plus `POST /api/evaluate` gated behind a session | F-03 | US-03, FR-012, FR-013, FR-014, FR-015 | done |
 | S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | done |
-| S-03 | evaluation-history | browse a list of their past contracts (most recent first), expand any row to see the original Markdown verbatim | F-01, F-02, S-01 | US-05, FR-018, FR-019 | proposed |
+| S-03 | evaluation-history | browse a list of their past contracts (most recent first), expand any row to see the original Markdown verbatim | F-01, F-02, S-01 | US-05, FR-018, FR-019 | done |
 
 ## Streams
 
@@ -136,7 +136,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced after S-02 because S-02 is the cheaper RLS-on-user-data validation. Risk: the byte-identical-after-fixture-edits NFR is easy to violate by storing structured data and re-rendering on read; mitigated by storing the Markdown blob verbatim per FR-018 and verifying with a re-seed determinism test.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -167,7 +167,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
-(Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived.)
+- **S-03: user can browse a list of their past contracts (most recent first; per row: verdict, delta, counterparty name, threshold_pct, source, timestamp); expanding a row shows the full Markdown contract verbatim, byte-identical to the original; each user only sees their own history; a never-ran account sees an empty state, not a crash.** — Archived 2026-06-02 → `context/archive/2026-06-01-evaluation-history/`. Lesson: —.
 
 - **F-01: (foundation) Postgres reachable from the Workers runtime, first migration shipped, RLS contract for user-scoped tables documented and enforced** — Archived 2026-05-30 → `context/archive/2026-05-29-postgres-rls-baseline/`. Lesson: —.
 - **F-02: (foundation) counterparties live in a Postgres table seeded by a database migration with byte-identical fields to the v1 `FIXTURE_POOL`; the evaluator reads counterparties from the database, not from `src/lib/fixture-pool.ts`; the module is deleted; v1 determinism is preserved (same operator inputs produce byte-identical Markdown contracts).** — Archived 2026-05-30 → `context/archive/2026-05-30-seed-counterparty-pool/`. Lesson: —.
