@@ -237,21 +237,21 @@ New migration only; no changes to existing migrations or seeds. No backfill — 
 ### Phase 2: Service layer + evaluate-route wiring + vitest
 
 #### Automated
-- [x] 2.1 All tests pass: `npm test`
-- [x] 2.2 Type checking passes: `npm run build`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 All tests pass: `npm test` — 13daf51
+- [x] 2.2 Type checking passes: `npm run build` — 13daf51
+- [x] 2.3 Linting passes: `npm run lint` — 13daf51
 
 #### Manual
-- [x] 2.4 Account A runs evaluator twice → two `evaluations` rows with correct fields; Account B → none
+- [x] 2.4 Account A runs evaluator twice → two `evaluations` rows with correct fields; Account B → none — 13daf51
 
 ### Phase 3: History page + middleware gate + nav
 
 #### Automated
-- [ ] 3.1 Type checking passes: `npm run build`
-- [ ] 3.2 Linting passes: `npm run lint`
+- [x] 3.1 Type checking passes: `npm run build`
+- [x] 3.2 Linting passes: `npm run lint`
 
 #### Manual
-- [ ] 3.3 After ≥1 eval → `/history` lists rows newest-first; expand shows contract byte-identical
-- [ ] 3.4 Fresh account → `/history` empty-state (no crash)
-- [ ] 3.5 Second account never sees the first account's history
-- [ ] 3.6 Signed out → `/history` redirects to `/auth/signin?redirect=%2Fhistory`
+- [x] 3.3 After ≥1 eval → `/history` lists rows newest-first; expand shows contract byte-identical
+- [x] 3.4 Fresh account → `/history` empty-state (no crash)
+- [x] 3.5 Second account never sees the first account's history
+- [x] 3.6 Signed out → `/history` redirects to `/auth/signin?redirect=%2Fhistory`

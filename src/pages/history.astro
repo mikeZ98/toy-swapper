@@ -1,0 +1,129 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { createClient } from "@/lib/supabase";
+import { listEvaluations, type EvaluationHistoryRow } from "@/lib/evaluations";
+
+const { user, log } = Astro.locals;
+
+// `/history` is gated by middleware, so `user` is always present here; the
+// guard keeps TypeScript honest and degrades safely if the gate ever changes.
+let rows: EvaluationHistoryRow[] = [];
+if (user) {
+  try {
+    const supabase = createClient(Astro.request.headers, Astro.cookies);
+    rows = await listEvaluations(supabase, user.id);
+  } catch (err) {
+    log.warn("evaluations.load_failed", { outcome: "failure", error: err });
+  }
+}
+
+const dateFmt = new Intl.DateTimeFormat("pl-PL", {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+function verdictLabel(verdict: string | null): string {
+  if (!verdict) return "NO MATCH";
+  return verdict;
+}
+
+function verdictClasses(verdict: string | null): string {
+  if (!verdict) return "bg-rose-100 text-rose-800";
+  if (verdict === "FAIR") return "bg-emerald-100 text-emerald-800";
+  return "bg-amber-100 text-amber-800";
+}
+---
+
+<Layout title="Historia wymian">
+  <div class="relative min-h-screen overflow-hidden bg-gradient-to-tr from-pink-50 via-indigo-50 to-amber-50">
+    <div
+      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-400 opacity-30 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute right-1/4 bottom-10 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-400 opacity-30 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+
+    <main class="relative mx-auto max-w-3xl px-4 pt-16 pb-24">
+      <div class="mb-8 flex items-center justify-between text-sm">
+        <span class="text-slate-600">{user?.email}</span>
+        <div class="flex items-center gap-3">
+          <a
+            href="/"
+            class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
+          >
+            Wymiana
+          </a>
+          <form method="POST" action="/api/auth/signout">
+            <button
+              type="submit"
+              class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
+            >
+              Wyloguj
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <h1
+        class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
+      >
+        Historia wymian 📜
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-slate-700 md:text-lg">
+        Twoje poprzednie kontrakty wymiany — od najnowszego.
+      </p>
+
+      {
+        rows.length === 0 ? (
+          <div class="mx-auto mt-10 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-12 text-center shadow-2xl backdrop-blur-xl">
+            <p class="text-lg font-medium text-slate-700">Nie masz jeszcze żadnych wymian.</p>
+            <p class="mt-2 text-sm text-slate-500">
+              Wróć do{" "}
+              <a href="/" class="font-medium text-purple-700 underline hover:text-purple-900">
+                strony głównej
+              </a>{" "}
+              i sprawdź uczciwość pierwszej wymiany.
+            </p>
+          </div>
+        ) : (
+          <ul class="mx-auto mt-10 max-w-2xl space-y-4">
+            {rows.map((row) => (
+              <li>
+                <details class="group rounded-[2rem] border border-white/60 bg-white/70 p-6 shadow-xl backdrop-blur-xl">
+                  <summary class="flex cursor-pointer flex-wrap items-center gap-2 text-sm marker:content-['']">
+                    <span
+                      class:list={[
+                        "rounded-full px-3 py-1 text-xs font-semibold tracking-wide",
+                        verdictClasses(row.verdict),
+                      ]}
+                    >
+                      {verdictLabel(row.verdict)}
+                    </span>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold tracking-wide text-slate-700">
+                      {row.delta_pln == null ? "delta: n/a" : `delta: ${row.delta_pln} PLN`}
+                    </span>
+                    <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-800">
+                      source: {row.source}
+                    </span>
+                    <span class="text-slate-600">{row.counterparty_name ?? "—"}</span>
+                    <span class="text-slate-400">próg {row.threshold_pct}%</span>
+                    <span class="ml-auto text-slate-500">{dateFmt.format(new Date(row.created_at))}</span>
+                  </summary>
+                  {/* Astro preserves whitespace inside <pre>; the contract expression must
+                      stay tight against the tags so the rendered text is byte-identical to
+                      the evaluator output (PRD NFR). prettier-ignore pins the formatting. */}
+                  {/* prettier-ignore */}
+                  <pre class="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50/80 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap">{row.contract}</pre>
+                </details>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </main>
+  </div>
+</Layout>
