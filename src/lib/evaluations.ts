@@ -1,24 +1,25 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Verdict, EvaluationSource } from "@/types";
 
 /** The fields persisted per successful evaluation (FR-018). */
 export interface EvaluationInput {
   contract: string;
-  verdict: string | null;
+  verdict: Verdict | null;
   delta_pln: number | null;
   counterparty_id: string | null;
   threshold_pct: number;
-  source: string;
+  source: EvaluationSource;
 }
 
 /** A history row shaped for the /history page (FR-019). */
 export interface EvaluationHistoryRow {
   id: string;
-  verdict: string | null;
+  verdict: Verdict | null;
   delta_pln: number | null;
   counterparty_id: string | null;
   counterparty_name: string | null;
   threshold_pct: number;
-  source: string;
+  source: EvaluationSource;
   created_at: string;
   contract: string;
 }
@@ -26,11 +27,11 @@ export interface EvaluationHistoryRow {
 /** Raw select row: the embedded `counterparties(name)` is a to-one join (or null). */
 interface EvaluationRow {
   id: string;
-  verdict: string | null;
+  verdict: Verdict | null;
   delta_pln: number | null;
   counterparty_id: string | null;
   threshold_pct: number;
-  source: string;
+  source: EvaluationSource;
   created_at: string;
   contract: string;
   counterparties: { name: string } | null;
