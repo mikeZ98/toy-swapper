@@ -46,14 +46,22 @@ const initialWant = saved?.want ?? sampleWant;
     <main class="relative mx-auto max-w-3xl px-4 pt-16 pb-24">
       <div class="mb-8 flex items-center justify-between text-sm">
         <span class="text-slate-600">{user?.email}</span>
-        <form method="POST" action="/api/auth/signout">
-          <button
-            type="submit"
+        <div class="flex items-center gap-3">
+          <a
+            href="/history"
             class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
           >
-            Wyloguj
-          </button>
-        </form>
+            Historia
+          </a>
+          <form method="POST" action="/api/auth/signout">
+            <button
+              type="submit"
+              class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
+            >
+              Wyloguj
+            </button>
+          </form>
+        </div>
       </div>
 
       <div class="mb-6 flex justify-center">
