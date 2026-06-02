@@ -229,13 +229,13 @@ None — no data, schema, or persisted-contract changes.
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 5d187f1
+- [x] 2.2 Production build succeeds: `npm run build` — 5d187f1
 
 #### Manual
 
-- [x] 2.3 Submit shows button spinner + disabled state and a skeleton in the result area
-- [x] 2.4 Skeleton replaced by real contract; pills legible for FAIR / NEEDS BALANCING / NO MATCH
-- [x] 2.5 Contract Markdown fully readable on the dark `<pre>` surface
-- [x] 2.6 Clear resets + hides result; Copy works; 401-expiry redirect still works
-- [x] 2.7 Evaluate still returns within ≤5s (no perceived regression)
+- [x] 2.3 Submit shows button spinner + disabled state and a skeleton in the result area — 5d187f1
+- [x] 2.4 Skeleton replaced by real contract; pills legible for FAIR / NEEDS BALANCING / NO MATCH — 5d187f1
+- [x] 2.5 Contract Markdown fully readable on the dark `<pre>` surface — 5d187f1
+- [x] 2.6 Clear resets + hides result; Copy works; 401-expiry redirect still works — 5d187f1
+- [x] 2.7 Evaluate still returns within ≤5s (no perceived regression) — 5d187f1
