@@ -215,27 +215,27 @@ None — no data, schema, or persisted-contract changes.
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Production build succeeds: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint` — 4157646
+- [x] 1.2 Production build succeeds: `npm run build` — 4157646
 
 #### Manual
 
-- [x] 1.3 Evaluator renders on dark `bg-cosmic`, consistent with `/auth/signin`
-- [x] 1.4 Shared Topbar shows email + Dashboard + working Sign out
-- [x] 1.5 Hero, card, textareas, buttons legible with visible focus states
-- [x] 1.6 Give/want textareas still pre-filled on load (SSR pre-fill intact)
+- [x] 1.3 Evaluator renders on dark `bg-cosmic`, consistent with `/auth/signin` — 4157646
+- [x] 1.4 Shared Topbar shows email + Dashboard + working Sign out — 4157646
+- [x] 1.5 Hero, card, textareas, buttons legible with visible focus states — 4157646
+- [x] 1.6 Give/want textareas still pre-filled on load (SSR pre-fill intact) — 4157646
 
 ### Phase 2: Loading & Result States
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Submit shows button spinner + disabled state and a skeleton in the result area
-- [ ] 2.4 Skeleton replaced by real contract; pills legible for FAIR / NEEDS BALANCING / NO MATCH
-- [ ] 2.5 Contract Markdown fully readable on the dark `<pre>` surface
-- [ ] 2.6 Clear resets + hides result; Copy works; 401-expiry redirect still works
-- [ ] 2.7 Evaluate still returns within ≤5s (no perceived regression)
+- [x] 2.3 Submit shows button spinner + disabled state and a skeleton in the result area
+- [x] 2.4 Skeleton replaced by real contract; pills legible for FAIR / NEEDS BALANCING / NO MATCH
+- [x] 2.5 Contract Markdown fully readable on the dark `<pre>` surface
+- [x] 2.6 Clear resets + hides result; Copy works; 401-expiry redirect still works
+- [x] 2.7 Evaluate still returns within ≤5s (no perceived regression)

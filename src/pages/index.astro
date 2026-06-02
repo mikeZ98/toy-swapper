@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Topbar from "@/components/Topbar.astro";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import { getUserLists } from "@/lib/user-lists";
@@ -128,25 +129,39 @@ const initialWant = saved?.want ?? sampleWant;
       <section
         id="result"
         hidden
-        class="mx-auto mt-8 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-10"
+        class="mx-auto mt-8 max-w-2xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-xl md:p-10"
       >
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-slate-800">Kontrakt wymiany</h2>
+          <h2 class="text-xl font-bold text-white">Kontrakt wymiany</h2>
           <button
             type="button"
             id="copy-btn"
-            class="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm transition hover:border-purple-400 hover:text-purple-700"
-            >Kopiuj Markdown</button
+            class:list={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "rounded-full border-white/15 bg-white/5 text-blue-100/80 hover:bg-white/10 hover:text-white",
+            )}>Kopiuj Markdown</button
           >
         </div>
-        <div class="mb-4 flex flex-wrap gap-2">
-          <span id="verdict-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
-          <span id="source-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
-          <span id="delta-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+
+        <div id="result-skeleton" class="space-y-3">
+          <div class="flex flex-wrap gap-2">
+            <Skeleton className="h-6 w-32 rounded-full bg-white/10" />
+            <Skeleton className="h-6 w-24 rounded-full bg-white/10" />
+            <Skeleton className="h-6 w-20 rounded-full bg-white/10" />
+          </div>
+          <Skeleton className="h-40 w-full rounded-2xl bg-white/10" />
         </div>
-        <pre
-          id="contract-md"
-          class="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50/80 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap"><code /></pre>
+
+        <div id="result-content" hidden>
+          <div class="mb-4 flex flex-wrap gap-2">
+            <span id="verdict-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+            <span id="source-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+            <span id="delta-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+          </div>
+          <pre
+            id="contract-md"
+            class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-blue-50"><code /></pre>
+        </div>
       </section>
     </main>
   </div>
@@ -158,6 +173,8 @@ const initialWant = saved?.want ?? sampleWant;
       const clearBtn = document.getElementById("clear-btn");
       const statusLine = document.getElementById("status-line");
       const result = document.getElementById("result");
+      const resultSkeleton = document.getElementById("result-skeleton");
+      const resultContent = document.getElementById("result-content");
       const verdictPill = document.getElementById("verdict-pill");
       const sourcePill = document.getElementById("source-pill");
       const deltaPill = document.getElementById("delta-pill");
@@ -165,22 +182,29 @@ const initialWant = saved?.want ?? sampleWant;
       const copyBtn = document.getElementById("copy-btn");
 
       const PILL_BASE = "px-3 py-1 rounded-full text-xs font-semibold tracking-wide";
+      const runBtnDefaultHtml = runBtn.innerHTML;
 
       function setStatus(msg, isError) {
         statusLine.textContent = msg;
-        statusLine.className = isError ? "text-rose-600 text-sm" : "text-slate-500 text-sm";
+        statusLine.className = isError ? "text-rose-300 text-sm" : "text-blue-100/60 text-sm";
+      }
+
+      function setRunBtnPending(pending) {
+        runBtn.innerHTML = pending
+          ? '<span class="flex items-center justify-center gap-2"><span class="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>Sprawdzam…</span>'
+          : runBtnDefaultHtml;
       }
 
       function renderVerdict(verdict) {
         if (!verdict) {
           verdictPill.textContent = "NO MATCH";
-          verdictPill.className = PILL_BASE + " bg-rose-100 text-rose-800";
+          verdictPill.className = PILL_BASE + " bg-rose-500/15 text-rose-200";
         } else if (verdict === "FAIR") {
           verdictPill.textContent = "FAIR";
-          verdictPill.className = PILL_BASE + " bg-emerald-100 text-emerald-800";
+          verdictPill.className = PILL_BASE + " bg-emerald-500/15 text-emerald-200";
         } else {
           verdictPill.textContent = "NEEDS BALANCING";
-          verdictPill.className = PILL_BASE + " bg-amber-100 text-amber-800";
+          verdictPill.className = PILL_BASE + " bg-amber-500/15 text-amber-200";
         }
       }
 
@@ -193,7 +217,12 @@ const initialWant = saved?.want ?? sampleWant;
           return;
         }
         runBtn.disabled = true;
+        setRunBtnPending(true);
         setStatus("Evaluating…", false);
+        // Reveal the result card showing the skeleton placeholder while in flight.
+        result.hidden = false;
+        resultSkeleton.hidden = false;
+        resultContent.hidden = true;
         const started = performance.now();
         try {
           const res = await fetch("/api/evaluate", {
@@ -209,21 +238,26 @@ const initialWant = saved?.want ?? sampleWant;
           const json = await res.json();
           if (!res.ok) {
             setStatus("Error: " + (json.error ?? res.status), true);
+            result.hidden = true;
             return;
           }
           const elapsedMs = Math.round(performance.now() - started);
           renderVerdict(json.verdict);
           sourcePill.textContent = "source: " + json.source;
-          sourcePill.className = PILL_BASE + " bg-indigo-100 text-indigo-800";
+          sourcePill.className = PILL_BASE + " bg-indigo-500/15 text-indigo-200";
           deltaPill.textContent = json.delta_pln == null ? "delta: n/a" : "delta: " + json.delta_pln + " PLN";
-          deltaPill.className = PILL_BASE + " bg-slate-100 text-slate-700";
+          deltaPill.className = PILL_BASE + " bg-white/10 text-blue-100/80";
           contractCode.textContent = json.contract;
-          result.hidden = false;
+          // Swap the skeleton out for the real contract.
+          resultSkeleton.hidden = true;
+          resultContent.hidden = false;
           setStatus("Done in " + elapsedMs + " ms.", false);
         } catch (err) {
           setStatus("Network error: " + (err.message || err), true);
+          result.hidden = true;
         } finally {
           runBtn.disabled = false;
+          setRunBtnPending(false);
         }
       });
 
