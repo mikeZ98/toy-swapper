@@ -105,8 +105,7 @@ const initialWant = saved?.want ?? sampleWant;
             type="submit"
             id="run-btn"
             class:list={cn(
-              buttonVariants({ size: "lg" }),
-              "h-auto w-full rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 py-4 text-base font-semibold text-white shadow-lg shadow-purple-500/30 hover:scale-[1.01] hover:opacity-95 active:scale-[0.99]",
+              "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 py-4 text-base font-semibold text-white shadow-lg shadow-purple-500/30 transition-all outline-none hover:scale-[1.01] hover:opacity-95 focus-visible:ring-2 focus-visible:ring-purple-400 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50",
             )}
           >
             Sprawdź uczciwość wymiany
@@ -143,7 +142,7 @@ const initialWant = saved?.want ?? sampleWant;
           >
         </div>
 
-        <div id="result-skeleton" class="space-y-3">
+        <div id="result-skeleton" class="space-y-3" aria-hidden="true">
           <div class="flex flex-wrap gap-2">
             <Skeleton className="h-6 w-32 rounded-full bg-white/10" />
             <Skeleton className="h-6 w-24 rounded-full bg-white/10" />
