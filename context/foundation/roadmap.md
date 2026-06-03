@@ -3,7 +3,7 @@ project: ToySwapper
 version: 1
 status: draft
 created: 2026-05-29
-updated: 2026-06-02
+updated: 2026-06-03
 prd_version: 2
 main_goal: quality
 top_blocker: decisions
@@ -33,7 +33,7 @@ ToySwapper turns two parents' freeform descriptions of items they have and want 
 | S-01 | gated-evaluator | sign in / sign out, and have `/` plus `POST /api/evaluate` gated behind a session | F-03 | US-03, FR-012, FR-013, FR-014, FR-015 | done |
 | S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | done |
 | S-03 | evaluation-history | browse a list of their past contracts (most recent first), expand any row to see the original Markdown verbatim | F-01, F-02, S-01 | US-05, FR-018, FR-019 | proposed |
-| S-06 | ux-ui-improvements | use a polished evaluator UI — consistent Tailwind v4 styling, loading states during evaluation, and refined layout | F-01 | NFR (quality bias) | planned |
+| S-06 | ux-ui-improvements | use a polished evaluator UI — consistent Tailwind v4 styling, loading states during evaluation, and refined layout | F-01 | NFR (quality bias) | done |
 | S-07 | auth-frontend-views | sign in and sign up through dedicated `/auth/signin` and `/auth/signup` pages wired to Supabase Auth | F-01 | US-03, FR-012, FR-013 | planned |
 
 ## Streams
@@ -151,7 +151,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Low-risk presentational slice, sequenced as independent parallel work. Risk: styling churn touches shared components and regresses the evaluator layout; mitigated by scoping strictly to presentational changes — no edits to the evaluate or persistence code paths — and using the `cn()` helper plus existing shadcn/ui primitives rather than hand-rolled class strings.
-- **Status:** planned
+- **Status:** done
 
 ### S-07: Auth Frontend Views
 
@@ -203,3 +203,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-03: (foundation) API routes emit structured logs (request id, route, user id when known, outcome) for auth events, RLS denials, and evaluator success/failure; errors are observable in production via the chosen sink.** — Archived 2026-05-31 → `context/archive/2026-05-31-structured-logging-baseline/`. Lesson: —.
 - **S-01: user can sign up, sign in, and sign out; `/` and `POST /api/evaluate` are gated behind a session (redirect to `/auth/signin` for the page, HTTP 401 JSON for the API); the post-sign-in redirect preserves the original target.** — Archived 2026-06-01 → `context/archive/2026-05-31-gated-evaluator/`. Lesson: —.
 - **S-02: user can return to the evaluator in a new session (after sign-out and sign-back-in) and find their last-entered give-list and want-list pre-filled; a different signed-in account never sees another user's saved lists; an account that has never run the evaluator sees empty textareas with no error.** — Archived 2026-06-01 → `context/archive/2026-06-01-restore-saved-lists/`. Lesson: —.
+- **S-06: user sees a polished evaluator UI — consistent Tailwind v4 styling across the give/want form and contract output, explicit loading states while an evaluation is in flight, and refined page layout and spacing; no functional change to the evaluate or persistence flows.** — Archived 2026-06-03 → `context/archive/2026-06-02-ux-ui-improvements/`. Lesson: —.

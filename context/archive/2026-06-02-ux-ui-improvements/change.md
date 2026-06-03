@@ -1,10 +1,10 @@
 ---
 change_id: ux-ui-improvements
 title: Polish the evaluator UI — consistent Tailwind v4 styling, loading states, refined layout
-status: impl_reviewed
+status: archived
 created: 2026-06-02
-updated: 2026-06-02
-archived_at: null
+updated: 2026-06-03
+archived_at: 2026-06-03T18:43:09Z
 ---
 
 ## Notes
