@@ -8,8 +8,14 @@ const { user } = Astro.locals;
   {
     user ? (
       <>
-        <span class="text-blue-100/70">{user.email}</span>
+        <a
+          href="/"
+          class="rounded bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-base font-bold text-transparent transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-purple-400"
+        >
+          ToySwapper
+        </a>
         <div class="flex items-center gap-3">
+          <span class="text-blue-100/70">{user.email}</span>
           <a href="/dashboard" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
             Dashboard
           </a>
@@ -22,8 +28,14 @@ const { user } = Astro.locals;
       </>
     ) : (
       <>
-        <span class="text-blue-100/70">Not signed in</span>
-        <div class="flex gap-3">
+        <a
+          href="/"
+          class="rounded bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-base font-bold text-transparent transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-purple-400"
+        >
+          ToySwapper
+        </a>
+        <div class="flex items-center gap-3">
+          <span class="text-blue-100/70">Not signed in</span>
           <a href="/auth/signin" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
             Sign in
           </a>
