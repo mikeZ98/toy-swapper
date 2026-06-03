@@ -1,5 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import { getUserLists } from "@/lib/user-lists";
 
@@ -26,39 +30,29 @@ const initialWant = saved?.want ?? sampleWant;
 ---
 
 <Layout title="ToySwapper">
-  <div class="relative min-h-screen overflow-hidden bg-gradient-to-tr from-pink-50 via-indigo-50 to-amber-50">
+  <div class="bg-cosmic relative min-h-screen overflow-hidden">
     <div
-      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-400 opacity-30 blur-3xl"
+      class="absolute top-10 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-purple-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
     <div
-      class="absolute top-1/3 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-pink-400 opacity-30 blur-3xl"
+      class="absolute top-1/3 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-pink-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
     <div
-      class="absolute bottom-10 left-1/3 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-400 opacity-30 blur-3xl"
+      class="absolute bottom-10 left-1/3 -z-10 h-[400px] w-[400px] rounded-full bg-indigo-600 opacity-20 blur-3xl"
       aria-hidden="true"
     >
     </div>
 
     <main class="relative mx-auto max-w-3xl px-4 pt-16 pb-24">
-      <div class="mb-8 flex items-center justify-between text-sm">
-        <span class="text-slate-600">{user?.email}</span>
-        <form method="POST" action="/api/auth/signout">
-          <button
-            type="submit"
-            class="rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-purple-400 hover:text-purple-700"
-          >
-            Wyloguj
-          </button>
-        </form>
-      </div>
+      <Topbar />
 
-      <div class="mb-6 flex justify-center">
+      <div class="mt-8 mb-6 flex justify-center">
         <span
-          class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-1.5 text-sm font-medium text-purple-900 shadow-sm backdrop-blur-md"
+          class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-blue-100/80 shadow-sm backdrop-blur-md"
         >
           <span class="relative flex h-2 w-2">
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
@@ -69,39 +63,39 @@ const initialWant = saved?.want ?? sampleWant;
       </div>
 
       <h1
-        class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
+        class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-4xl font-extrabold tracking-tight text-transparent md:text-5xl"
       >
         Daj zabawkom drugie życie ✨
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-slate-700 md:text-lg">
+      <p class="mx-auto mt-4 max-w-2xl text-center text-base text-blue-100/70 md:text-lg">
         Wymieniaj się bezgotówkowo i bezpiecznie z rodzicami w swojej okolicy. Nasz system AI zadba o pełną uczciwość
         każdej oferty.
       </p>
 
       <div
-        class="mx-auto mt-10 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-12"
+        class="mx-auto mt-10 max-w-2xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-xl md:p-12"
       >
         <form id="evaluate-form" novalidate class="space-y-6">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700">Co dajesz</span>
+              <span class="text-sm font-medium text-blue-100/80">Co dajesz</span>
               <textarea
                 id="give"
                 name="give"
                 rows="6"
                 placeholder="LEGO Duplo, bluza H&M..."
-                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                class="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-sm text-white shadow-inner transition-all duration-200 placeholder:text-blue-100/40 focus:border-transparent focus:ring-2 focus:ring-purple-400 focus:outline-none"
                 >{initialGive}</textarea
               >
             </label>
             <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700">Co chcesz</span>
+              <span class="text-sm font-medium text-blue-100/80">Co chcesz</span>
               <textarea
                 id="want"
                 name="want"
                 rows="6"
                 placeholder="lalka Barbie, kredki..."
-                class="w-full resize-y rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 font-mono text-sm shadow-inner transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-purple-500"
+                class="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-sm text-white shadow-inner transition-all duration-200 placeholder:text-blue-100/40 focus:border-transparent focus:ring-2 focus:ring-purple-400 focus:outline-none"
                 >{initialWant}</textarea
               >
             </label>
@@ -110,16 +104,23 @@ const initialWant = saved?.want ?? sampleWant;
           <button
             type="submit"
             id="run-btn"
-            class="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 px-8 py-4 text-center font-semibold text-white shadow-xl shadow-purple-500/20 transition-all duration-300 hover:scale-[1.01] hover:opacity-95 active:scale-[0.99]"
+            class:list={cn(
+              "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 py-4 text-base font-semibold text-white shadow-lg shadow-purple-500/30 transition-all outline-none hover:scale-[1.01] hover:opacity-95 focus-visible:ring-2 focus-visible:ring-purple-400 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50",
+            )}
           >
             Sprawdź uczciwość wymiany
           </button>
 
           <div class="flex items-center justify-between gap-3 text-sm">
-            <button type="button" id="clear-btn" class="text-slate-500 transition-colors hover:text-slate-800"
-              >Wyczyść</button
+            <button
+              type="button"
+              id="clear-btn"
+              class:list={cn(
+                buttonVariants({ variant: "link", size: "sm" }),
+                "h-auto px-0 text-blue-100/60 hover:text-blue-100",
+              )}>Wyczyść</button
             >
-            <span id="status-line" aria-live="polite" class="text-slate-500"></span>
+            <span id="status-line" aria-live="polite" class="text-blue-100/60"></span>
           </div>
         </form>
       </div>
@@ -127,25 +128,39 @@ const initialWant = saved?.want ?? sampleWant;
       <section
         id="result"
         hidden
-        class="mx-auto mt-8 max-w-2xl rounded-[2.5rem] border border-white/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl md:p-10"
+        class="mx-auto mt-8 max-w-2xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-xl md:p-10"
       >
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-slate-800">Kontrakt wymiany</h2>
+          <h2 class="text-xl font-bold text-white">Kontrakt wymiany</h2>
           <button
             type="button"
             id="copy-btn"
-            class="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm transition hover:border-purple-400 hover:text-purple-700"
-            >Kopiuj Markdown</button
+            class:list={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "rounded-full border-white/15 bg-white/5 text-blue-100/80 hover:bg-white/10 hover:text-white",
+            )}>Kopiuj Markdown</button
           >
         </div>
-        <div class="mb-4 flex flex-wrap gap-2">
-          <span id="verdict-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
-          <span id="source-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
-          <span id="delta-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+
+        <div id="result-skeleton" class="space-y-3" aria-hidden="true">
+          <div class="flex flex-wrap gap-2">
+            <Skeleton className="h-6 w-32 rounded-full bg-white/10" />
+            <Skeleton className="h-6 w-24 rounded-full bg-white/10" />
+            <Skeleton className="h-6 w-20 rounded-full bg-white/10" />
+          </div>
+          <Skeleton className="h-40 w-full rounded-2xl bg-white/10" />
         </div>
-        <pre
-          id="contract-md"
-          class="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50/80 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap"><code /></pre>
+
+        <div id="result-content" hidden>
+          <div class="mb-4 flex flex-wrap gap-2">
+            <span id="verdict-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+            <span id="source-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+            <span id="delta-pill" class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"></span>
+          </div>
+          <pre
+            id="contract-md"
+            class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-blue-50"><code /></pre>
+        </div>
       </section>
     </main>
   </div>
@@ -157,6 +172,8 @@ const initialWant = saved?.want ?? sampleWant;
       const clearBtn = document.getElementById("clear-btn");
       const statusLine = document.getElementById("status-line");
       const result = document.getElementById("result");
+      const resultSkeleton = document.getElementById("result-skeleton");
+      const resultContent = document.getElementById("result-content");
       const verdictPill = document.getElementById("verdict-pill");
       const sourcePill = document.getElementById("source-pill");
       const deltaPill = document.getElementById("delta-pill");
@@ -164,22 +181,29 @@ const initialWant = saved?.want ?? sampleWant;
       const copyBtn = document.getElementById("copy-btn");
 
       const PILL_BASE = "px-3 py-1 rounded-full text-xs font-semibold tracking-wide";
+      const runBtnDefaultHtml = runBtn.innerHTML;
 
       function setStatus(msg, isError) {
         statusLine.textContent = msg;
-        statusLine.className = isError ? "text-rose-600 text-sm" : "text-slate-500 text-sm";
+        statusLine.className = isError ? "text-rose-300 text-sm" : "text-blue-100/60 text-sm";
+      }
+
+      function setRunBtnPending(pending) {
+        runBtn.innerHTML = pending
+          ? '<span class="flex items-center justify-center gap-2"><span class="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>Sprawdzam…</span>'
+          : runBtnDefaultHtml;
       }
 
       function renderVerdict(verdict) {
         if (!verdict) {
           verdictPill.textContent = "NO MATCH";
-          verdictPill.className = PILL_BASE + " bg-rose-100 text-rose-800";
+          verdictPill.className = PILL_BASE + " bg-rose-500/15 text-rose-200";
         } else if (verdict === "FAIR") {
           verdictPill.textContent = "FAIR";
-          verdictPill.className = PILL_BASE + " bg-emerald-100 text-emerald-800";
+          verdictPill.className = PILL_BASE + " bg-emerald-500/15 text-emerald-200";
         } else {
           verdictPill.textContent = "NEEDS BALANCING";
-          verdictPill.className = PILL_BASE + " bg-amber-100 text-amber-800";
+          verdictPill.className = PILL_BASE + " bg-amber-500/15 text-amber-200";
         }
       }
 
@@ -192,7 +216,12 @@ const initialWant = saved?.want ?? sampleWant;
           return;
         }
         runBtn.disabled = true;
+        setRunBtnPending(true);
         setStatus("Evaluating…", false);
+        // Reveal the result card showing the skeleton placeholder while in flight.
+        result.hidden = false;
+        resultSkeleton.hidden = false;
+        resultContent.hidden = true;
         const started = performance.now();
         try {
           const res = await fetch("/api/evaluate", {
@@ -208,21 +237,26 @@ const initialWant = saved?.want ?? sampleWant;
           const json = await res.json();
           if (!res.ok) {
             setStatus("Error: " + (json.error ?? res.status), true);
+            result.hidden = true;
             return;
           }
           const elapsedMs = Math.round(performance.now() - started);
           renderVerdict(json.verdict);
           sourcePill.textContent = "source: " + json.source;
-          sourcePill.className = PILL_BASE + " bg-indigo-100 text-indigo-800";
+          sourcePill.className = PILL_BASE + " bg-indigo-500/15 text-indigo-200";
           deltaPill.textContent = json.delta_pln == null ? "delta: n/a" : "delta: " + json.delta_pln + " PLN";
-          deltaPill.className = PILL_BASE + " bg-slate-100 text-slate-700";
+          deltaPill.className = PILL_BASE + " bg-white/10 text-blue-100/80";
           contractCode.textContent = json.contract;
-          result.hidden = false;
+          // Swap the skeleton out for the real contract.
+          resultSkeleton.hidden = true;
+          resultContent.hidden = false;
           setStatus("Done in " + elapsedMs + " ms.", false);
         } catch (err) {
           setStatus("Network error: " + (err.message || err), true);
+          result.hidden = true;
         } finally {
           runBtn.disabled = false;
+          setRunBtnPending(false);
         }
       });
 
