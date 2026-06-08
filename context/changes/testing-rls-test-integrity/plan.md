@@ -243,10 +243,10 @@ No migrations are touched. The negative controls mutate policies only inside the
 
 #### Automated
 
-- [x] 3.1 §6.1 no longer contains the literal `TBD — see §3 Phase 1`
-- [x] 3.2 Markdown well-formed (`prettier --check context/foundation/test-plan.md` if run)
+- [x] 3.1 §6.1 no longer contains the literal `TBD — see §3 Phase 1` — e19dcdc
+- [x] 3.2 Markdown well-formed (`prettier --check context/foundation/test-plan.md` if run) — e19dcdc
 
 #### Manual
 
-- [x] 3.3 A reader can follow §6.1 to add a new RLS test with a negative control unaided
-- [x] 3.4 CI-gate note accurately matches `ci.yml` (`db` job runs `supabase test db`)
+- [x] 3.3 A reader can follow §6.1 to add a new RLS test with a negative control unaided — e19dcdc
+- [x] 3.4 CI-gate note accurately matches `ci.yml` (`db` job runs `supabase test db`) — e19dcdc
