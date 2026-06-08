@@ -218,26 +218,26 @@ No migrations are touched. The negative controls mutate policies only inside the
 
 #### Automated
 
-- [x] 1.1 pgTAP suite passes: `npm run db:test`
-- [x] 1.2 Each test's `plan(N)` equals its actual assertion count (no plan mismatch)
-- [x] 1.3 SQL lint passes: `supabase db lint --level warning`
+- [x] 1.1 pgTAP suite passes: `npm run db:test` — 61c6b50
+- [x] 1.2 Each test's `plan(N)` equals its actual assertion count (no plan mismatch) — 61c6b50
+- [x] 1.3 SQL lint passes: `supabase db lint --level warning` — 61c6b50
 
 #### Manual
 
-- [x] 1.4 Sabotage check: relaxing `_rls_probe_select_own` to `using(true)` at definition time turns the template test red
-- [x] 1.5 Sabotage check: dropping `user_lists_insert_own`'s `with check` turns the cross-write `42501` assert red
+- [x] 1.4 Sabotage check: relaxing `_rls_probe_select_own` to `using(true)` at definition time turns the template test red — 61c6b50
+- [x] 1.5 Sabotage check: dropping `user_lists_insert_own`'s `with check` turns the cross-write `42501` assert red — 61c6b50
 
 ### Phase 2: Inverted control for the shared read-only table
 
 #### Automated
 
-- [ ] 2.1 pgTAP suite passes: `npm run db:test`
-- [ ] 2.2 `plan(N)` equals actual assertion count
-- [ ] 2.3 SQL lint passes: `supabase db lint --level warning`
+- [x] 2.1 pgTAP suite passes: `npm run db:test`
+- [x] 2.2 `plan(N)` equals actual assertion count
+- [x] 2.3 SQL lint passes: `supabase db lint --level warning`
 
 #### Manual
 
-- [ ] 2.4 Sabotage check: adding a permissive insert policy at setup time turns the `counterparties` write-denial assert red
+- [x] 2.4 Sabotage check: adding a permissive insert policy at setup time turns the `counterparties` write-denial assert red
 
 ### Phase 3: Cookbook + gate documentation
 
