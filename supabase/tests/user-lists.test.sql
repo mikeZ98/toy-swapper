@@ -18,7 +18,7 @@
 
 begin;
 
-select plan(6);
+select plan(8);
 
 -- ---------------------------------------------------------------------------
 -- 1-2. Table exists, RLS enabled.
@@ -120,6 +120,53 @@ select results_eq(
   $$ values ('alice-give-v2'::text) $$,
   'Alice row holds the upserted give_text (update in place, RLS confirmed as the filter)'
 );
+
+-- ---------------------------------------------------------------------------
+-- 9. NEGATIVE CONTROL (R2 — false-green guard): prove the SELECT assertion is
+--    causally bound to user_lists_select_own. Relax it to using(true) and
+--    re-assert Alice now sees BOTH rows. Policy DDL runs as the table OWNER
+--    (superuser); step 8 did `reset role`, so we are superuser here.
+-- ---------------------------------------------------------------------------
+
+alter policy "user_lists_select_own" on public.user_lists using (true);
+
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+set local "request.jwt.claim.sub" to '00000000-0000-0000-0000-00000000000a';
+
+select results_eq(
+  $$ select count(*)::bigint from public.user_lists $$,
+  $$ values (2::bigint) $$,
+  'NEGATIVE CONTROL: with the select policy relaxed to using(true), Alice sees BOTH rows — proves the "Alice sees 1" assertion is bound to the policy'
+);
+
+-- ---------------------------------------------------------------------------
+-- 10. NEGATIVE CONTROL (R2 — 42501 disambiguation): relax the insert WITH
+--     CHECK to (true), grant untouched, and prove a cross-account write now
+--     SUCCEEDS. UNIQUE(user_id) means we cannot reuse Bob (he already has a
+--     row → that would raise 23505, not prove anything), so we seed a third
+--     user (Carol, no row yet) and have Alice write a row Carol owns.
+-- ---------------------------------------------------------------------------
+
+reset role;
+insert into auth.users (id, instance_id, email, encrypted_password, aud, role, created_at, updated_at)
+values
+  ('00000000-0000-0000-0000-00000000000c',
+   '00000000-0000-0000-0000-000000000000',
+   'carol@test.local', '', 'authenticated', 'authenticated', now(), now());
+alter policy "user_lists_insert_own" on public.user_lists with check (true);
+
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+set local "request.jwt.claim.sub" to '00000000-0000-0000-0000-00000000000a';
+
+select lives_ok(
+  $$ insert into public.user_lists (user_id, give_text, want_text)
+       values ('00000000-0000-0000-0000-00000000000c', 'alice-writing-as-carol', 'now-allowed') $$,
+  'NEGATIVE CONTROL: with the insert WITH CHECK relaxed to (true) and the grant intact, Alice CAN write a row she does not own — proves the earlier 42501 was the RLS policy, not a missing grant'
+);
+
+reset role;
 
 select * from finish();
 

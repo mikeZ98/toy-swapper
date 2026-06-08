@@ -22,7 +22,7 @@
 
 begin;
 
-select plan(9);
+select plan(11);
 
 -- ---------------------------------------------------------------------------
 -- 1-2. Helper functions exist
@@ -195,6 +195,53 @@ select results_eq(
   $$ values (2::bigint) $$,
   'postgres role sees both rows — confirms RLS (not data absence) is filtering'
 );
+
+-- ---------------------------------------------------------------------------
+-- 13. NEGATIVE CONTROL (R2 — false-green guard): prove the SELECT assertion
+--     above is causally bound to its policy. Relax the select policy to
+--     using(true) and re-assert that Alice now sees BOTH rows. If she still
+--     saw 1, the "Alice sees 1" assertion was not actually exercising RLS and
+--     would pass even against a broken policy.
+--
+--     Policy DDL is transactional and rolls back with the whole test; it must
+--     run as the table OWNER (the test superuser), not as `authenticated`.
+--     We are at superuser here — assertion 12 did `reset role`.
+-- ---------------------------------------------------------------------------
+
+alter policy "_rls_probe_select_own" on public._rls_probe using (true);
+
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+set local "request.jwt.claim.sub" to '00000000-0000-0000-0000-00000000000a';
+
+select results_eq(
+  $$ select count(*)::bigint from public._rls_probe $$,
+  $$ values (2::bigint) $$,
+  'NEGATIVE CONTROL: with the select policy relaxed to using(true), Alice sees BOTH rows — proves the "Alice sees 1" assertion is bound to the policy, not to data absence'
+);
+
+-- ---------------------------------------------------------------------------
+-- 14. NEGATIVE CONTROL (R2 — 42501 disambiguation): relax the insert WITH
+--     CHECK to (true), leaving the GRANT untouched, and prove Alice''s
+--     previously-denied write-as-Bob now SUCCEEDS. A missing table grant and
+--     an RLS WITH CHECK violation both raise 42501; flipping only the policy
+--     (grant intact) pins the earlier 42501 to RLS, not to a missing grant.
+-- ---------------------------------------------------------------------------
+
+reset role;
+alter policy "_rls_probe_insert_own" on public._rls_probe with check (true);
+
+set local role authenticated;
+set local "request.jwt.claims" to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+set local "request.jwt.claim.sub" to '00000000-0000-0000-0000-00000000000a';
+
+select lives_ok(
+  $$ insert into public._rls_probe (user_id, payload)
+       values ('00000000-0000-0000-0000-00000000000b', 'alice-writing-as-bob-now-allowed') $$,
+  'NEGATIVE CONTROL: with the insert WITH CHECK relaxed to (true) and the grant intact, Alice CAN write a row owned by Bob — proves the earlier 42501 was the RLS policy, not a missing grant'
+);
+
+reset role;
 
 select * from finish();
 
