@@ -1,10 +1,10 @@
 ---
 change_id: testing-rls-test-integrity
 title: Testing rls test integrity
-status: implemented
+status: archived
 created: 2026-06-08
 updated: 2026-06-08
-archived_at: null
+archived_at: 2026-06-08T20:55:51Z
 ---
 
 ## Notes
