@@ -231,22 +231,22 @@ No migrations are touched. The negative controls mutate policies only inside the
 
 #### Automated
 
-- [x] 2.1 pgTAP suite passes: `npm run db:test`
-- [x] 2.2 `plan(N)` equals actual assertion count
-- [x] 2.3 SQL lint passes: `supabase db lint --level warning`
+- [x] 2.1 pgTAP suite passes: `npm run db:test` — 69fc5ab
+- [x] 2.2 `plan(N)` equals actual assertion count — 69fc5ab
+- [x] 2.3 SQL lint passes: `supabase db lint --level warning` — 69fc5ab
 
 #### Manual
 
-- [x] 2.4 Sabotage check: adding a permissive insert policy at setup time turns the `counterparties` write-denial assert red
+- [x] 2.4 Sabotage check: adding a permissive insert policy at setup time turns the `counterparties` write-denial assert red — 69fc5ab
 
 ### Phase 3: Cookbook + gate documentation
 
 #### Automated
 
-- [ ] 3.1 §6.1 no longer contains the literal `TBD — see §3 Phase 1`
-- [ ] 3.2 Markdown well-formed (`prettier --check context/foundation/test-plan.md` if run)
+- [x] 3.1 §6.1 no longer contains the literal `TBD — see §3 Phase 1`
+- [x] 3.2 Markdown well-formed (`prettier --check context/foundation/test-plan.md` if run)
 
 #### Manual
 
-- [ ] 3.3 A reader can follow §6.1 to add a new RLS test with a negative control unaided
-- [ ] 3.4 CI-gate note accurately matches `ci.yml` (`db` job runs `supabase test db`)
+- [x] 3.3 A reader can follow §6.1 to add a new RLS test with a negative control unaided
+- [x] 3.4 CI-gate note accurately matches `ci.yml` (`db` job runs `supabase test db`)
