@@ -21,6 +21,12 @@ pnpm-debug.log*
 .dev.vars
 .wrangler/
 
+# playwright e2e (artifacts + captured session storageState — holds a live token)
+test-results/
+playwright-report/
+playwright/.cache/
+e2e/.auth/
+
 # macOS-specific files
 .DS_Store
 
