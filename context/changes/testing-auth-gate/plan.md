@@ -328,30 +328,30 @@ None — additive test coverage and dev-only tooling. No schema, no production c
 
 #### Automated
 
-- [x] 2.1 New endpoint tests pass: `npm test`
-- [x] 2.2 Extended middleware tests pass: `npm test`
-- [x] 2.3 User-facing `error` param asserted without raw log internals
-- [x] 2.4 Type checking passes: `npx astro check`
-- [x] 2.5 Linting passes: `npm run lint`
+- [x] 2.1 New endpoint tests pass: `npm test` — 8125d35
+- [x] 2.2 Extended middleware tests pass: `npm test` — 8125d35
+- [x] 2.3 User-facing `error` param asserted without raw log internals — 8125d35
+- [x] 2.4 Type checking passes: `npx astro check` — 8125d35
+- [x] 2.5 Linting passes: `npm run lint` — 8125d35
 
 #### Manual
 
-- [x] 2.6 Success-redirect sanitization exercised through the endpoint (`//evil.com` → `/`)
-- [x] 2.7 Endpoint tests mock only `createClient` (§7 respected)
+- [x] 2.6 Success-redirect sanitization exercised through the endpoint (`//evil.com` → `/`) — 8125d35
+- [x] 2.7 Endpoint tests mock only `createClient` (§7 respected) — 8125d35
 
 ### Phase 3: Auth Form Component Tests
 
 #### Automated
 
-- [ ] 3.1 Component tests pass under jsdom: `npm test`
-- [ ] 3.2 All suites (node + jsdom) green in one run: `npm test`
-- [ ] 3.3 Type checking passes: `npx astro check`
-- [ ] 3.4 Linting passes: `npm run lint`
+- [x] 3.1 Component tests pass under jsdom: `npm test`
+- [x] 3.2 All suites (node + jsdom) green in one run: `npm test`
+- [x] 3.3 Type checking passes: `npx astro check`
+- [x] 3.4 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.5 Tests assert our wiring only — no Supabase, no faked navigation (§7)
-- [ ] 3.6 Valid-submit→redirect intentionally absent (owned by Phase 2) — boundary split reads clearly
+- [x] 3.5 Tests assert our wiring only — no Supabase, no faked navigation (§7)
+- [x] 3.6 Valid-submit→redirect intentionally absent (owned by Phase 2) — boundary split reads clearly
 
 ### Phase 4: Cookbook + Test-Plan Bookkeeping
 
