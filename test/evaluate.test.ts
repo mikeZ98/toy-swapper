@@ -8,9 +8,12 @@ import type { EvaluateResponse } from "@/types";
 vi.mock("@/lib/supabase", () => ({ createClient: vi.fn(() => ({})) }));
 vi.mock("@/lib/counterparties", () => ({ getCounterpartyPool: vi.fn() }));
 vi.mock("@/lib/evaluator", () => ({ evaluate: vi.fn() }));
+vi.mock("@/lib/user-lists", () => ({ saveUserLists: vi.fn() }));
+vi.mock("@/lib/evaluation-history", () => ({ saveEvaluation: vi.fn() }));
 
 import { getCounterpartyPool } from "@/lib/counterparties";
 import { evaluate } from "@/lib/evaluator";
+import { saveEvaluation } from "@/lib/evaluation-history";
 import { POST } from "@/pages/api/evaluate";
 
 interface Captured {
@@ -35,7 +38,7 @@ function makeLog(): { log: Logger; events: Captured[] } {
   return { log, events };
 }
 
-function makeContext(body: unknown, log: Logger): Parameters<typeof POST>[0] {
+function makeContext(body: unknown, log: Logger, user: { id: string } | null = null): Parameters<typeof POST>[0] {
   const ctx = {
     request: new Request("http://localhost/api/evaluate", {
       method: "POST",
@@ -43,7 +46,7 @@ function makeContext(body: unknown, log: Logger): Parameters<typeof POST>[0] {
       headers: { "content-type": "application/json" },
     }),
     cookies: {} as AstroCookies,
-    locals: { log, requestId: "test-req", user: null },
+    locals: { log, requestId: "test-req", user },
   };
   return ctx as unknown as Parameters<typeof POST>[0];
 }
@@ -109,5 +112,28 @@ describe("POST /api/evaluate — structured logging", () => {
     const blob = JSON.stringify(events);
     expect(blob).not.toContain("SECRET_GIVE_LIST");
     expect(blob).not.toContain("SECRET_WANT_LIST");
+  });
+
+  it("persists evaluation history (best-effort) when a user is present", async () => {
+    vi.mocked(getCounterpartyPool).mockResolvedValue([]);
+    vi.mocked(evaluate).mockResolvedValue(OK_RESPONSE);
+
+    const { log } = makeLog();
+    const res = await POST(makeContext({ give: "a", want: "b" }, log, { id: "u1" }));
+
+    expect(res.status).toBe(200);
+    expect(vi.mocked(saveEvaluation)).toHaveBeenCalledOnce();
+  });
+
+  it("does not fail the response when the history save throws (best-effort)", async () => {
+    vi.mocked(getCounterpartyPool).mockResolvedValue([]);
+    vi.mocked(evaluate).mockResolvedValue(OK_RESPONSE);
+    vi.mocked(saveEvaluation).mockRejectedValue(new Error("history db down"));
+
+    const { log, events } = makeLog();
+    const res = await POST(makeContext({ give: "a", want: "b" }, log, { id: "u1" }));
+
+    expect(res.status).toBe(200);
+    expect(events.some((e) => e.event === "evaluation_history.save_failed")).toBe(true);
   });
 });

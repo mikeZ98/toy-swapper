@@ -6,6 +6,7 @@ import { evaluate } from "@/lib/evaluator";
 import { createClient } from "@/lib/supabase";
 import { getCounterpartyPool } from "@/lib/counterparties";
 import { saveUserLists } from "@/lib/user-lists";
+import { saveEvaluation } from "@/lib/evaluation-history";
 import { isRlsDenied } from "@/lib/log";
 
 export const prerender = false;
@@ -59,6 +60,15 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
         await saveUserLists(supabase, locals.user.id, parsed.data.give, parsed.data.want);
       } catch (saveErr) {
         log.warn("user_lists.save_failed", { outcome: "failure", error: saveErr });
+      }
+
+      // Persist this evaluation to the user's history (FR-018). Best-effort and
+      // independent of the user_lists save — a history failure must not hide the
+      // result either. Records every success, including NO MATCH.
+      try {
+        await saveEvaluation(supabase, locals.user.id, result);
+      } catch (saveErr) {
+        log.warn("evaluation_history.save_failed", { outcome: "failure", error: saveErr });
       }
     }
 
