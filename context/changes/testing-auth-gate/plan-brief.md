@@ -16,13 +16,13 @@ Phase 2 of the project test rollout (`context/foundation/test-plan.md` §3). It 
 
 ## Key Decisions Made
 
-| Decision                  | Choice                                                              | Why (1 sentence)                                                                 | Source |
-| ------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ------ |
-| R3 investment             | Minimal hardening (sub-path matching), focus budget on R4          | Existing middleware suite already proves the gate contract — don't re-test it.   | Plan   |
-| Component toolchain        | jsdom + @testing-library/react (+ jest-dom, user-event)            | Matches test-plan §4's named tool; widest React 19 support.                      | Plan / Frame (§4) |
-| DOM isolation mechanism    | Per-file `// @vitest-environment jsdom` docblock                   | `environmentMatchGlobs` is removed in Vitest 4.1.7; docblock keeps node global.  | Plan   |
-| Component test boundary    | Validation + error render + submit gating; no network/submit mock  | Native-POST forms have no in-component fetch — the POST is the boundary (§7).     | Plan / Frame (§7) |
-| Endpoint assertions        | All four: bad-creds bounce, sanitized success, not_configured, signup→confirm-email | These are the reachable branches that prove R4's endpoint half.                  | Plan   |
+| Decision                | Choice                                                                              | Why (1 sentence)                                                                | Source            |
+| ----------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------- |
+| R3 investment           | Minimal hardening (sub-path matching), focus budget on R4                           | Existing middleware suite already proves the gate contract — don't re-test it.  | Plan              |
+| Component toolchain     | jsdom + @testing-library/react (+ jest-dom, user-event)                             | Matches test-plan §4's named tool; widest React 19 support.                     | Plan / Frame (§4) |
+| DOM isolation mechanism | Per-file `// @vitest-environment jsdom` docblock                                    | `environmentMatchGlobs` is removed in Vitest 4.1.7; docblock keeps node global. | Plan              |
+| Component test boundary | Validation + error render + submit gating; no network/submit mock                   | Native-POST forms have no in-component fetch — the POST is the boundary (§7).   | Plan / Frame (§7) |
+| Endpoint assertions     | All four: bad-creds bounce, sanitized success, not_configured, signup→confirm-email | These are the reachable branches that prove R4's endpoint half.                 | Plan              |
 
 ## Scope
 
@@ -36,12 +36,12 @@ Four `/10x-implement`-driven phases (tests against existing code, so not TDD). I
 
 ## Phases at a Glance
 
-| Phase                                         | What it delivers                                              | Key risk                                                        |
-| --------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| 1. Component test infrastructure              | jsdom + RTL installed, Vitest setup file, smoke render        | jsdom leaking into / slowing node tests                        |
-| 2. Endpoint integration + R3 hardening        | signin/signup endpoint tests + gate sub-path cases            | mocking too deep (Supabase internals) instead of the boundary |
-| 3. Auth form component tests                  | SignInForm/SignUpForm validation + error + redirect-field     | asserting framework behavior instead of our wiring            |
-| 4. Cookbook + test-plan bookkeeping           | §6.2/§6.3 recipes + §4/§5/§3/§8 ledger updates                | docs drifting from what actually landed                        |
+| Phase                                  | What it delivers                                          | Key risk                                                      |
+| -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------- |
+| 1. Component test infrastructure       | jsdom + RTL installed, Vitest setup file, smoke render    | jsdom leaking into / slowing node tests                       |
+| 2. Endpoint integration + R3 hardening | signin/signup endpoint tests + gate sub-path cases        | mocking too deep (Supabase internals) instead of the boundary |
+| 3. Auth form component tests           | SignInForm/SignUpForm validation + error + redirect-field | asserting framework behavior instead of our wiring            |
+| 4. Cookbook + test-plan bookkeeping    | §6.2/§6.3 recipes + §4/§5/§3/§8 ledger updates            | docs drifting from what actually landed                       |
 
 **Prerequisites:** none beyond the repo; Phase 3 depends on Phase 1.
 **Estimated effort:** ~2–3 sessions across 4 phases.
