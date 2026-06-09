@@ -284,31 +284,31 @@ None — additive dev tooling, new `e2e/` specs, and docs. No schema, no product
 
 #### Automated
 
-- [x] 1.1 Playwright + chromium install cleanly: `npm install` + `npx playwright install chromium`
-- [x] 1.2 Smoke spec passes against the built worker: `npx playwright test gate.spec.ts`
-- [x] 1.3 Existing suites unaffected: `npm test`
-- [x] 1.4 Linting passes: `npm run lint`
-- [x] 1.5 Type checking passes: `npx astro check`
+- [x] 1.1 Playwright + chromium install cleanly: `npm install` + `npx playwright install chromium` — f8d5719
+- [x] 1.2 Smoke spec passes against the built worker: `npx playwright test gate.spec.ts` — f8d5719
+- [x] 1.3 Existing suites unaffected: `npm test` — f8d5719
+- [x] 1.4 Linting passes: `npm run lint` — f8d5719
+- [x] 1.5 Type checking passes: `npx astro check` — f8d5719
 
 #### Manual
 
-- [x] 1.6 webServer builds then serves preview without timeout; run is hermetic
-- [x] 1.7 No test-results/report/.auth artifacts staged in git
+- [x] 1.6 webServer builds then serves preview without timeout; run is hermetic — f8d5719
+- [x] 1.7 No test-results/report/.auth artifacts staged in git — f8d5719
 
 ### Phase 2: Auth Session Infra + Dedicated Auth Spec
 
 #### Automated
 
-- [ ] 2.1 Global-setup captures storageState with local Supabase up: `npx playwright test`
-- [ ] 2.2 Auth spec passes: `npx playwright test auth.spec.ts`
-- [ ] 2.3 Linting passes: `npm run lint`
-- [ ] 2.4 Type checking passes: `npx astro check`
+- [x] 2.1 Global-setup captures storageState with local Supabase up: `npx playwright test`
+- [x] 2.2 Auth spec passes: `npx playwright test auth.spec.ts`
+- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.4 Type checking passes: `npx astro check`
 
 #### Manual
 
-- [ ] 2.5 `e2e/.auth/user.json` generated and NOT tracked by git
-- [ ] 2.6 Success case lands on gated `/` (session crossed middleware)
-- [ ] 2.7 Re-run reuses the user (idempotent signUp does not error)
+- [x] 2.5 `e2e/.auth/user.json` generated and NOT tracked by git
+- [x] 2.6 Success case lands on gated `/` (session crossed middleware)
+- [x] 2.7 Re-run reuses the user (idempotent signUp does not error)
 
 ### Phase 3: Evaluator Inline-Script E2E
 
