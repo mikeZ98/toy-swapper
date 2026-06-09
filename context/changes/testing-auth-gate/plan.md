@@ -361,11 +361,11 @@ None — additive test coverage and dev-only tooling. No schema, no production c
 
 #### Automated
 
-- [x] 4.1 Markdown format passes: `npm run format`
-- [x] 4.2 No "TBD — see §3 Phase 2" strings remain in §6.2/§6.3
-- [x] 4.3 Full test suite still green: `npm test`
+- [x] 4.1 Markdown format passes: `npm run format` — 237f576
+- [x] 4.2 No "TBD — see §3 Phase 2" strings remain in §6.2/§6.3 — 237f576
+- [x] 4.3 Full test suite still green: `npm test` — 237f576
 
 #### Manual
 
-- [x] 4.4 §6.2/§6.3 recipes are actionable by a contributor who wasn't here
-- [x] 4.5 §3 status and §4 stack rows match what landed on disk
+- [x] 4.4 §6.2/§6.3 recipes are actionable by a contributor who wasn't here — 237f576
+- [x] 4.5 §3 status and §4 stack rows match what landed on disk — 237f576
