@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-09 (§3 Phase 2 → auth gate + form path tests landed; §6.2/§6.3 recipes + §4 stack + §5 gate filled)
+> Last updated: 2026-06-09 (e2e setup → Playwright layer added, externally-motivated; §4 e2e row + §5 CI-deferral + §6.5 recipe + §7 boundary)
 
 ## 1. Strategy
 
@@ -102,19 +102,19 @@ The classic test base for this project. AI-native tools (if any) carry a
 Recommendations in this section are grounded in local manifests/configs plus
 the MCP/tools actually exposed in the current session.
 
-| Layer              | Tool                           | Version                      | Notes                                                                                                                                                                                                                                             |
-| ------------------ | ------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| unit + integration | Vitest                         | (per `package.json`)         | `npm test` → `vitest run`; node + jsdom specs in `test/` (gate: `middleware`; endpoints: `auth-signin`, `auth-signup`, `evaluate`; forms: `SignInForm`, `SignUpForm`; plus `determinism`, `redirect`, `user-lists`, `log`)                        |
-| DB / RLS           | pgTAP via Supabase CLI         | (per `supabase/config.toml`) | `npm run db:test` → `supabase test db`; 3 tests in `supabase/tests/`                                                                                                                                                                              |
-| component          | @testing-library/react + jsdom | `react ^16.3`, `jsdom ^29.1` | Installed Phase 2 (checked: 2026-06-09). Per-file `// @vitest-environment jsdom` (Vitest 4 dropped `environmentMatchGlobs`); matchers via `@testing-library/jest-dom` in `test/setup-dom.ts`. Specs: `SignInForm.test.tsx`, `SignUpForm.test.tsx` |
-| API mocking        | Vitest `vi.mock` (boundary)    | (built-in)                   | No dedicated lib: endpoint tests mock `@/lib/supabase` `createClient` at the boundary; native-POST forms have no in-component fetch to mock (respects §7)                                                                                         |
-| e2e                | none                           | n/a                          | No Playwright; deliberately out of scope — RLS and gate are cheaper to prove below the browser                                                                                                                                                    |
+| Layer              | Tool                           | Version                      | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------ | ------------------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| unit + integration | Vitest                         | (per `package.json`)         | `npm test` → `vitest run`; node + jsdom specs in `test/` (gate: `middleware`; endpoints: `auth-signin`, `auth-signup`, `evaluate`; forms: `SignInForm`, `SignUpForm`; plus `determinism`, `redirect`, `user-lists`, `log`)                                                                                                                                                                                                                               |
+| DB / RLS           | pgTAP via Supabase CLI         | (per `supabase/config.toml`) | `npm run db:test` → `supabase test db`; 3 tests in `supabase/tests/`                                                                                                                                                                                                                                                                                                                                                                                     |
+| component          | @testing-library/react + jsdom | `react ^16.3`, `jsdom ^29.1` | Installed Phase 2 (checked: 2026-06-09). Per-file `// @vitest-environment jsdom` (Vitest 4 dropped `environmentMatchGlobs`); matchers via `@testing-library/jest-dom` in `test/setup-dom.ts`. Specs: `SignInForm.test.tsx`, `SignUpForm.test.tsx`                                                                                                                                                                                                        |
+| API mocking        | Vitest `vi.mock` (boundary)    | (built-in)                   | No dedicated lib: endpoint tests mock `@/lib/supabase` `createClient` at the boundary; native-POST forms have no in-component fetch to mock (respects §7)                                                                                                                                                                                                                                                                                                |
+| e2e                | Playwright (chromium)          | `@playwright/test ^1.60`     | Added 2026-06-09 (checked: 2026-06-09), **externally/learning-motivated — NOT risk-driven** (the risk map is covered at cheaper layers; see §7). Targets the two browser-only surfaces: the signin→cookie→gate round-trip and the `index.astro` inline evaluator script. Boots `build`+`preview` (localhost:4321) against local Supabase; `OPENAI_API_KEY` unset → stub determinism. Specs: `e2e/{gate,auth,evaluate}.spec.ts`. **Local-only** (see §5). |
 
 **Stack grounding tools (current session):**
 
 - Docs: none (no Context7 or framework docs MCP exposed) — relied on local `package.json`, `supabase/config.toml`, and existing test files; checked: 2026-06-08
 - Search: built-in web search / fetch available — not needed; stack is fully determinable from local config; checked: 2026-06-08
-- Runtime/browser: none (no Playwright MCP) — not used; no e2e layer in this rollout; checked: 2026-06-08
+- Runtime/browser: no Playwright MCP exposed — the e2e layer (added 2026-06-09) runs locally via `@playwright/test` against `build`+`preview`, not through an MCP; checked: 2026-06-09
 - Provider/platform: none (no Supabase or GitHub MCP exposed) — not used; RLS verified locally via `supabase test db`; checked: 2026-06-08
 
 ## 5. Quality Gates
@@ -145,6 +145,13 @@ signin/signup endpoint bounce-and-redirect behavior, and the form components'
 validation + error display. These run in the existing lint + build CI on every
 push/PR; the same branch-protection caveat applies if a strictly-blocking
 required check is wanted.
+
+The Playwright e2e layer (added 2026-06-09) is intentionally **local-only** and is
+NOT a CI gate. It is externally/learning-motivated rather than risk-driven (§7), and
+the CI workflow is currently failing at startup (account-billing), so adding an
+unverifiable e2e job would be false signal. Wiring it into CI later requires a
+browser and a local Supabase stack in the job; until then, run it locally with
+`npm run test:e2e` (see §6.5).
 
 ## 6. Cookbook Patterns
 
@@ -262,7 +269,34 @@ in-component fetch, so the POST itself is the boundary — assert _our_ wiring
 - Reference test: `test/determinism.test.ts`.
 - Run locally: `npm test`.
 
-### 6.5 Per-rollout-phase notes
+### 6.5 Adding an e2e (Playwright) test
+
+E2E is reserved for surfaces no cheaper layer can reach (real browser + running
+app). Today that is the auth round-trip and the `index.astro` inline evaluator
+script. Do not add e2e for anything provable at the unit/integration/component
+layer (§1).
+
+- **Prerequisites:** local Supabase up (`supabase start`); `.dev.vars` with the
+  local `SUPABASE_URL`/`SUPABASE_KEY`; **no `OPENAI_API_KEY`** set (so the
+  evaluator stays on its deterministic stub path).
+- **Run:** `npm run test:e2e` (or `npx playwright test`). Playwright boots the
+  production worker via `build`+`preview` on `localhost:4321` (`reuseExistingServer`
+  locally).
+- **Auth:** the config-level `globalSetup` (`e2e/global-setup.ts`) seeds the test
+  user once (race-free); the `setup` project (`e2e/auth.setup.ts`) signs in through
+  the real form and saves `storageState` to `e2e/.auth/user.json` (gitignored —
+  holds a live token). Authenticated specs run in the `chromium-auth` project and
+  reuse it; logged-out specs (gate, the auth form spec) run in `chromium`.
+- **Hydration gotcha:** fill `client:load` React-island fields only after hydration
+  — `openSignin()` waits for `networkidle` first, or the value is wiped when React
+  mounts.
+- **Determinism guard:** assert the rendered `source` pill reads `stub`; a leaked
+  `OPENAI_API_KEY` flips it and fails the test loudly.
+- Worked examples: `e2e/gate.spec.ts` (anonymous redirect), `e2e/auth.spec.ts`
+  (form round-trip), `e2e/evaluate.spec.ts` (inline evaluator). **Local-only — not a
+  CI gate (§5).**
+
+### 6.6 Per-rollout-phase notes
 
 (Optional. After each phase lands, `/10x-implement` appends a 2–3 line note
 here capturing anything surprising the phase taught.)
@@ -277,12 +311,18 @@ contributors should respect these unless the underlying assumption changes.
   error display, redirect), and mock the auth endpoint at the boundary rather
   than reaching into Supabase internals. Re-evaluate if we fork or heavily
   customize the auth flow. (Source: Phase 2 interview Q5.)
+- **e2e as a risk gate** — the Playwright layer (§4) exists for an external /
+  learning requirement, NOT because any risk in §2 stopped being provable at a
+  cheaper layer. R1–R5 remain owned by pgTAP / integration / component tests. E2E
+  is scoped to the two genuinely browser-only surfaces (auth round-trip, inline
+  evaluator script) and stays local-only (§5). Do not expand it into a risk-driven
+  suite, and do not let its existence reopen the §1 cost×signal calculus.
 
 ## 8. Freshness Ledger
 
 - Strategy (§1–§5) last reviewed: 2026-06-09
-- Stack versions last verified: 2026-06-09 (component toolchain installed: @testing-library/react ^16.3, jsdom ^29.1)
-- AI-native tool references last verified: 2026-06-08
+- Stack versions last verified: 2026-06-09 (component toolchain @testing-library/react ^16.3 + jsdom ^29.1; e2e Playwright ^1.60 added)
+- AI-native tool references last verified: 2026-06-09
 
 Refresh (`/10x-test-plan --refresh`) when:
 

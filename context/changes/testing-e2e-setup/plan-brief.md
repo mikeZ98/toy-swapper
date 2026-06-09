@@ -17,14 +17,14 @@ No e2e infra exists (no Playwright, no `e2e/`). The uncovered surface — the in
 
 ## Key Decisions Made
 
-| Decision           | Choice                                   | Why (1 sentence)                                                              | Source |
-| ------------------ | ---------------------------------------- | ---------------------------------------------------------------------------- | ------ |
-| Why e2e at all     | External/learning requirement, not risk  | Risk map is already covered cheaper; e2e is the deliverable itself.          | Frame  |
-| Coverage / infra   | Full: sign in + run evaluator            | Covers both genuinely browser-only surfaces; the honest target.              | Plan   |
-| Session strategy   | storageState + dedicated auth spec       | Fast authenticated specs + one real form round-trip assertion.               | Plan   |
-| App boot           | `build` + `preview` (production-like)    | Tests the real cloudflare worker output, not the dev server.                 | Plan   |
-| Determinism        | Assert `source: stub` (no OPENAI key)    | Turns the stub assumption into a loud failure if a key leaks in.             | Plan   |
-| CI wiring          | Local-only, documented deferral          | CI is in startup_failure (billing); don't add an unverifiable job.           | Plan   |
+| Decision         | Choice                                  | Why (1 sentence)                                                    | Source |
+| ---------------- | --------------------------------------- | ------------------------------------------------------------------- | ------ |
+| Why e2e at all   | External/learning requirement, not risk | Risk map is already covered cheaper; e2e is the deliverable itself. | Frame  |
+| Coverage / infra | Full: sign in + run evaluator           | Covers both genuinely browser-only surfaces; the honest target.     | Plan   |
+| Session strategy | storageState + dedicated auth spec      | Fast authenticated specs + one real form round-trip assertion.      | Plan   |
+| App boot         | `build` + `preview` (production-like)   | Tests the real cloudflare worker output, not the dev server.        | Plan   |
+| Determinism      | Assert `source: stub` (no OPENAI key)   | Turns the stub assumption into a loud failure if a key leaks in.    | Plan   |
+| CI wiring        | Local-only, documented deferral         | CI is in startup_failure (billing); don't add an unverifiable job.  | Plan   |
 
 ## Scope
 
@@ -38,12 +38,12 @@ Playwright boots the production-built worker via `build`+`preview` (reads `.dev.
 
 ## Phases at a Glance
 
-| Phase                                | What it delivers                                          | Key risk                                            |
-| ------------------------------------ | --------------------------------------------------------- | --------------------------------------------------- |
-| 1. Harness + boot + unauth smoke     | Playwright config, gitignore, gate-redirect spec          | slow/timed-out build+preview boot; artifacts leaking to git |
-| 2. Auth infra + auth spec            | global-setup storageState + signin round-trip spec        | session not crossing the gate; non-idempotent seeding |
-| 3. Evaluator inline-script spec      | authenticated evaluation → contract renders (`stub`)      | a leaked OPENAI key making output non-deterministic |
-| 4. Documentation                     | test-plan §4/§6/§7 + CI deferral                          | docs reading as a silent strategy reversal          |
+| Phase                            | What it delivers                                     | Key risk                                                    |
+| -------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------- |
+| 1. Harness + boot + unauth smoke | Playwright config, gitignore, gate-redirect spec     | slow/timed-out build+preview boot; artifacts leaking to git |
+| 2. Auth infra + auth spec        | global-setup storageState + signin round-trip spec   | session not crossing the gate; non-idempotent seeding       |
+| 3. Evaluator inline-script spec  | authenticated evaluation → contract renders (`stub`) | a leaked OPENAI key making output non-deterministic         |
+| 4. Documentation                 | test-plan §4/§6/§7 + CI deferral                     | docs reading as a silent strategy reversal                  |
 
 **Prerequisites:** local Supabase (`supabase start`, Colima/Docker) for phases 2–3; `OPENAI_API_KEY` unset; `.dev.vars` with local Supabase creds.
 **Estimated effort:** ~2–3 sessions across 4 phases.
