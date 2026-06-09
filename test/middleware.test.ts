@@ -96,4 +96,33 @@ describe("middleware gate (S-01)", () => {
     expect(next).toHaveBeenCalledOnce();
     expect(res.status).toBe(200);
   });
+
+  it("gates a sub-path of a protected API route (401 JSON), not just the exact path", async () => {
+    mockUser(null);
+    const next = vi.fn(() => Promise.resolve(new Response("ok", { status: 200 })));
+    const res = await handler(makeContext("/api/evaluate/anything"), next);
+
+    expect(res.status).toBe(401);
+    expect(res.headers.get("content-type")).toBe("application/json");
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("gates a sub-path of a protected page route (redirect), not just the exact path", async () => {
+    mockUser(null);
+    const next = vi.fn(() => Promise.resolve(new Response("ok", { status: 200 })));
+    const res = await handler(makeContext("/dashboard/settings"), next);
+
+    expect(res.status).toBe(302);
+    expect(res.headers.get("Location")).toBe("/auth/signin?redirect=%2Fdashboard%2Fsettings");
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("matches `/` exactly — an ungated path is not caught as a prefix", async () => {
+    mockUser(null);
+    const next = vi.fn(() => Promise.resolve(new Response("ok", { status: 200 })));
+    const res = await handler(makeContext("/about"), next);
+
+    expect(next).toHaveBeenCalledOnce();
+    expect(res.status).toBe(200);
+  });
 });
