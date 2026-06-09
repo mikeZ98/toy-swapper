@@ -13,6 +13,11 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/**/*.test.ts"],
+    // Global environment stays node (the implicit default); component specs opt
+    // into jsdom per-file via a `// @vitest-environment jsdom` docblock —
+    // environmentMatchGlobs was removed in Vitest 4. setupFiles only registers
+    // jest-dom matchers + cleanup, so node-environment tests are unaffected.
+    include: ["test/**/*.test.ts", "test/**/*.test.tsx"],
+    setupFiles: ["./test/setup-dom.ts"],
   },
 });
