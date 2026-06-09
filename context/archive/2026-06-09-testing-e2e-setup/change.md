@@ -1,10 +1,10 @@
 ---
 change_id: testing-e2e-setup
 title: Testing e2e setup
-status: implemented
+status: archived
 created: 2026-06-09
 updated: 2026-06-09
-archived_at: null
+archived_at: 2026-06-09T09:53:11Z
 ---
 
 ## Notes
