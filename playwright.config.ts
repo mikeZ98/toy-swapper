@@ -10,6 +10,9 @@ const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "e2e",
+  // Seeds the e2e test user once (sequentially) before any project — avoids
+  // concurrent signUp races across the setup project and the form specs.
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -19,9 +22,23 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    // storageState / authenticated projects are added in Phase 2; the gate
-    // smoke runs anonymous so it asserts the unauthenticated redirect.
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    // Seeds the test user + captures authenticated storageState once.
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    // Logged-out specs (gate redirect + the signin form round-trip). No
+    // storageState; no dependency on setup so the gate smoke stays runnable
+    // even without the seed step (the form spec seeds its own user).
+    {
+      name: "chromium",
+      testIgnore: [/.*\.setup\.ts/, /evaluate\.spec\.ts/],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    // Authenticated specs reuse the captured session (Phase 3: evaluate.spec.ts).
+    {
+      name: "chromium-auth",
+      testMatch: /evaluate\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], storageState: "e2e/.auth/user.json" },
+      dependencies: ["setup"],
+    },
   ],
   webServer: {
     command: "npm run build && npm run preview",
