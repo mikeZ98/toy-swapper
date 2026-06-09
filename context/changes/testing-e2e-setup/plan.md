@@ -299,31 +299,31 @@ None — additive dev tooling, new `e2e/` specs, and docs. No schema, no product
 
 #### Automated
 
-- [x] 2.1 Global-setup captures storageState with local Supabase up: `npx playwright test`
-- [x] 2.2 Auth spec passes: `npx playwright test auth.spec.ts`
-- [x] 2.3 Linting passes: `npm run lint`
-- [x] 2.4 Type checking passes: `npx astro check`
+- [x] 2.1 Global-setup captures storageState with local Supabase up: `npx playwright test` — 3026df6
+- [x] 2.2 Auth spec passes: `npx playwright test auth.spec.ts` — 3026df6
+- [x] 2.3 Linting passes: `npm run lint` — 3026df6
+- [x] 2.4 Type checking passes: `npx astro check` — 3026df6
 
 #### Manual
 
-- [x] 2.5 `e2e/.auth/user.json` generated and NOT tracked by git
-- [x] 2.6 Success case lands on gated `/` (session crossed middleware)
-- [x] 2.7 Re-run reuses the user (idempotent signUp does not error)
+- [x] 2.5 `e2e/.auth/user.json` generated and NOT tracked by git — 3026df6
+- [x] 2.6 Success case lands on gated `/` (session crossed middleware) — 3026df6
+- [x] 2.7 Re-run reuses the user (idempotent signUp does not error) — 3026df6
 
 ### Phase 3: Evaluator Inline-Script E2E
 
 #### Automated
 
-- [ ] 3.1 Evaluator spec passes (Supabase up, OPENAI_API_KEY unset): `npx playwright test evaluate.spec.ts`
-- [ ] 3.2 Full e2e suite green in one run: `npx playwright test`
-- [ ] 3.3 Linting passes: `npm run lint`
-- [ ] 3.4 Type checking passes: `npx astro check`
+- [x] 3.1 Evaluator spec passes (Supabase up, OPENAI_API_KEY unset): `npx playwright test evaluate.spec.ts`
+- [x] 3.2 Full e2e suite green in one run: `npx playwright test`
+- [x] 3.3 Linting passes: `npm run lint`
+- [x] 3.4 Type checking passes: `npx astro check`
 
 #### Manual
 
-- [ ] 3.5 Rendered contract is deterministic stub output (`source: stub`), reproducible
-- [ ] 3.6 Spec exercises the real inline script (fetch + render), not a mock
-- [ ] 3.7 Clear action resets the page to initial state
+- [x] 3.5 Rendered contract is deterministic stub output (`source: stub`), reproducible
+- [x] 3.6 Spec exercises the real inline script (fetch + render), not a mock
+- [x] 3.7 Clear action resets the page to initial state
 
 ### Phase 4: Documentation
 
