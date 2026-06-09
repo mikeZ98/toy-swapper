@@ -8,7 +8,9 @@ import { safeRedirectPath } from "@/lib/redirect";
 // `/`-bounded sub-path. Pages redirect to sign-in; `/api/*` returns 401 JSON.
 function isGated(pathname: string): boolean {
   if (pathname === "/") return true;
-  return ["/dashboard", "/api/evaluate"].some((route) => pathname === route || pathname.startsWith(route + "/"));
+  return ["/dashboard", "/history", "/api/evaluate"].some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {

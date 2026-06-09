@@ -117,6 +117,16 @@ describe("middleware gate (S-01)", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("redirects an anonymous request to the gated /history page", async () => {
+    mockUser(null);
+    const next = vi.fn(() => Promise.resolve(new Response("ok", { status: 200 })));
+    const res = await handler(makeContext("/history"), next);
+
+    expect(res.status).toBe(302);
+    expect(res.headers.get("Location")).toBe("/auth/signin?redirect=%2Fhistory");
+    expect(next).not.toHaveBeenCalled();
+  });
+
   it("matches `/` exactly — an ungated path is not caught as a prefix", async () => {
     mockUser(null);
     const next = vi.fn(() => Promise.resolve(new Response("ok", { status: 200 })));
