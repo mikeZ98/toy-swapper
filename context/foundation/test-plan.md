@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-08 (§3 Phase 1 → negative controls landed; §6.1 recipe + §5 gate note filled)
+> Last updated: 2026-06-09 (§3 Phase 2 → auth gate + form path tests landed; §6.2/§6.3 recipes + §4 stack + §5 gate filled)
 
 ## 1. Strategy
 
@@ -81,11 +81,11 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                           | Goal (one line)                                                                                                               | Risks covered | Test types                            | Status        | Change folder                               |
-| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------- | ------------- | ------------------------------------------- |
-| 1   | RLS test integrity + isolation proof | Make every RLS test provably fail when its policy is removed, and lock cross-account isolation on existing user-scoped tables | #2, #1        | integration (pgTAP, negative-control) | change opened | context/changes/testing-rls-test-integrity/ |
-| 2   | Auth gate + signin/signup form path  | Prove the gate contract (redirect / 401 / target) holds and the form surfaces errors and redirects correctly                  | #3, #4        | integration + component               | not started   | —                                           |
-| 3   | Evaluation-history coverage          | Prove history rows are per-account isolated and stored byte-identical                                                         | #1, #5        | integration (pgTAP) + integration     | not started   | —                                           |
+| #   | Phase name                           | Goal (one line)                                                                                                               | Risks covered | Test types                            | Status      | Change folder                                          |
+| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------- | ----------- | ------------------------------------------------------ |
+| 1   | RLS test integrity + isolation proof | Make every RLS test provably fail when its policy is removed, and lock cross-account isolation on existing user-scoped tables | #2, #1        | integration (pgTAP, negative-control) | complete    | context/archive/2026-06-08-testing-rls-test-integrity/ |
+| 2   | Auth gate + signin/signup form path  | Prove the gate contract (redirect / 401 / target) holds and the form surfaces errors and redirects correctly                  | #3, #4        | integration + component               | complete    | context/changes/testing-auth-gate/                     |
+| 3   | Evaluation-history coverage          | Prove history rows are per-account isolated and stored byte-identical                                                         | #1, #5        | integration (pgTAP) + integration     | not started | —                                                      |
 
 Status vocabulary (fixed): `not started` → `change opened` → `researched` →
 `planned` → `implementing` → `complete`.
@@ -102,13 +102,13 @@ The classic test base for this project. AI-native tools (if any) carry a
 Recommendations in this section are grounded in local manifests/configs plus
 the MCP/tools actually exposed in the current session.
 
-| Layer              | Tool                           | Version                      | Notes                                                                                                                    |
-| ------------------ | ------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| unit + integration | Vitest                         | (per `package.json`)         | `npm test` → `vitest run`; 6 tests in `test/` (`determinism`, `evaluate`, `middleware`, `redirect`, `user-lists`, `log`) |
-| DB / RLS           | pgTAP via Supabase CLI         | (per `supabase/config.toml`) | `npm run db:test` → `supabase test db`; 3 tests in `supabase/tests/`                                                     |
-| component          | @testing-library/react + jsdom | none yet — see Phase 2       | Required for the signin/signup form path (R4); not currently installed                                                   |
-| API mocking        | none yet — see Phase 2         | n/a                          | R4 form tests mock the auth endpoint at the boundary, not Supabase internals (respects §7)                               |
-| e2e                | none                           | n/a                          | No Playwright; deliberately out of scope — RLS and gate are cheaper to prove below the browser                           |
+| Layer              | Tool                           | Version                      | Notes                                                                                                                                                                                                                                             |
+| ------------------ | ------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| unit + integration | Vitest                         | (per `package.json`)         | `npm test` → `vitest run`; node + jsdom specs in `test/` (gate: `middleware`; endpoints: `auth-signin`, `auth-signup`, `evaluate`; forms: `SignInForm`, `SignUpForm`; plus `determinism`, `redirect`, `user-lists`, `log`)                        |
+| DB / RLS           | pgTAP via Supabase CLI         | (per `supabase/config.toml`) | `npm run db:test` → `supabase test db`; 3 tests in `supabase/tests/`                                                                                                                                                                              |
+| component          | @testing-library/react + jsdom | `react ^16.3`, `jsdom ^29.1` | Installed Phase 2 (checked: 2026-06-09). Per-file `// @vitest-environment jsdom` (Vitest 4 dropped `environmentMatchGlobs`); matchers via `@testing-library/jest-dom` in `test/setup-dom.ts`. Specs: `SignInForm.test.tsx`, `SignUpForm.test.tsx` |
+| API mocking        | Vitest `vi.mock` (boundary)    | (built-in)                   | No dedicated lib: endpoint tests mock `@/lib/supabase` `createClient` at the boundary; native-POST forms have no in-component fetch to mock (respects §7)                                                                                         |
+| e2e                | none                           | n/a                          | No Playwright; deliberately out of scope — RLS and gate are cheaper to prove below the browser                                                                                                                                                    |
 
 **Stack grounding tools (current session):**
 
@@ -123,12 +123,12 @@ The full set of gates that must pass before a change reaches production.
 "Required for §3 Phase N" means the gate is enforced once that rollout phase
 lands; before that, the gate is `planned`.
 
-| Gate                        | Where                                   | Required?                                       | Catches                                                 |
-| --------------------------- | --------------------------------------- | ----------------------------------------------- | ------------------------------------------------------- |
-| lint + typecheck            | local + CI (`.github/workflows/ci.yml`) | required (already wired)                        | syntactic / type drift                                  |
-| unit + integration (Vitest) | local + CI                              | required after §3 Phase 2                       | logic regressions in gate + form paths                  |
-| RLS suite (pgTAP)           | local + CI                              | required after §3 Phase 1                       | cross-account data leaks; broken / false-green policies |
-| determinism check           | local + CI                              | required (already wired via `determinism` test) | byte-identical output drift                             |
+| Gate                        | Where                                   | Required?                                        | Catches                                                 |
+| --------------------------- | --------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- |
+| lint + typecheck            | local + CI (`.github/workflows/ci.yml`) | required (already wired)                         | syntactic / type drift                                  |
+| unit + integration (Vitest) | local + CI                              | required (Phase 2 landed gate + form path tests) | logic regressions in gate + form paths                  |
+| RLS suite (pgTAP)           | local + CI                              | required after §3 Phase 1                        | cross-account data leaks; broken / false-green policies |
+| determinism check           | local + CI                              | required (already wired via `determinism` test)  | byte-identical output drift                             |
 
 The pgTAP RLS suite already runs in CI via the `db` job in
 `.github/workflows/ci.yml` (`supabase test db` + `supabase db lint --level
@@ -138,6 +138,13 @@ policy is broken. The only residual to make it strictly blocking is marking the
 `db` job a required status check in GitHub branch protection, a repo setting
 outside the git tree. No aspirational gates are listed — every row maps to an
 existing test or a named rollout phase.
+
+Phase 2 of this rollout filled the Vitest gate's gate-and-form coverage: the
+auth-gate contract (redirect / 401 / target, including sub-path matching), the
+signin/signup endpoint bounce-and-redirect behavior, and the form components'
+validation + error display. These run in the existing lint + build CI on every
+push/PR; the same branch-protection caveat applies if a strictly-blocking
+required check is wanted.
 
 ## 6. Cookbook Patterns
 
@@ -196,16 +203,56 @@ mismatch (not a per-assertion failure).
 
 ### 6.2 Adding an integration test for an API route / middleware
 
-- TBD — see §3 Phase 2 (auth-gate contract: redirect, 401, target
-  preservation).
-- Existing references until then: `test/middleware.test.ts`,
-  `test/redirect.test.ts`, `test/evaluate.test.ts`.
+API routes and middleware are tested in the node environment (the Vitest
+default — no docblock needed) by driving the exported handler directly and
+mocking only the Supabase boundary.
+
+- **Mock the boundary, not the vendor (§7).** `vi.mock("@/lib/supabase", () => ({
+createClient: vi.fn() }))`, then configure `createClient` per-test to a fake
+  auth client, an error-returning client, or `null` (the unconfigured branch).
+  Never reach into Supabase auth internals.
+- **Build a minimal context.** Construct a `Request` (JSON body for
+  `/api/evaluate`; a `FormData` body for the auth endpoints), a captured
+  `locals.log` whose methods are `vi.fn()` and whose `child()` returns itself,
+  and a `redirect(location, status = 302)` stub returning
+  `new Response(null, { status, headers: { Location: location } })`. Middleware
+  also needs `url`, `cookies`, and a `next` spy.
+- **Assert on the response contract.** For redirects, parse
+  `new URL(res.headers.get("Location") ?? "", "http://localhost")` and check
+  `pathname` + `searchParams` (e.g. `error` preserved, `redirect` preserved). For
+  the gate, assert `status` (302 vs 401), `content-type`, and that `next` was /
+  was not called. Prove open-redirect sanitization _through the endpoint_ by
+  feeding a crafted `redirect` field (`//evil.com`) and asserting it collapses
+  to `/` — the unit test of `safeRedirectPath` can't give that boundary proof.
+- Worked examples: `test/auth-signin.test.ts`, `test/auth-signup.test.ts`,
+  `test/middleware.test.ts` (gate + sub-path matching), `test/evaluate.test.ts`.
 - Run locally: `npm test`.
 
 ### 6.3 Adding a component test for an auth form
 
-- TBD — see §3 Phase 2 (form submit → inline error display → redirect, with
-  the auth endpoint mocked at the boundary, not Supabase itself).
+React component tests run under jsdom. The native-POST forms have no
+in-component fetch, so the POST itself is the boundary — assert _our_ wiring
+(validation, error display, hidden fields), never navigation or Supabase.
+
+- **Opt into jsdom per file.** First line: `// @vitest-environment jsdom`
+  (Vitest 4 removed `environmentMatchGlobs`; the global default stays node).
+  jest-dom matchers and RTL cleanup come from `test/setup-dom.ts` via
+  `setupFiles` — no per-file import needed.
+- **Render + drive.** `render(<Form … />)` from `@testing-library/react`;
+  type with `@testing-library/user-event`. Get inputs by label, anchoring to
+  avoid collisions (`getByLabelText(/^password$/i)` — the PasswordToggle's
+  "Show password" aria-label also matches `/password/i`).
+- **Assert submit gating via the dispatch return.** `fireEvent.submit(form)`
+  returns `false` when a handler called `preventDefault` (invalid input) and
+  `true` when it did not (valid input proceeds to the native POST). Pair it with
+  the inline error text (`getByText("Email is required")`) and error-clears-on-
+  edit (`queryByText(...)` → null after typing).
+- **Server + hidden fields.** Pass `serverError` and assert `ServerError`
+  renders it; for forms with a redirect, assert the hidden
+  `input[name="redirect"]` value (and its `/` default). SignUpForm has no
+  redirect field — signup always lands on `/auth/confirm-email`.
+- Worked examples: `test/SignInForm.test.tsx`, `test/SignUpForm.test.tsx`.
+- Run locally: `npm test`.
 
 ### 6.4 Adding a determinism test
 
@@ -233,8 +280,8 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-06-08
-- Stack versions last verified: 2026-06-08
+- Strategy (§1–§5) last reviewed: 2026-06-09
+- Stack versions last verified: 2026-06-09 (component toolchain installed: @testing-library/react ^16.3, jsdom ^29.1)
 - AI-native tool references last verified: 2026-06-08
 
 Refresh (`/10x-test-plan --refresh`) when:

@@ -6,12 +6,12 @@ Phase 2 of the project test rollout (`context/foundation/test-plan.md` §3). Pro
 
 ## Current State Analysis
 
-- **R3 (gate) is already well-covered.** `test/middleware.test.ts:48-99` exercises anon page → 302 to `/auth/signin` with the sanitized target, deep-link target preservation (path + query), anon `POST /api/evaluate` → 401 JSON, authenticated passthrough, and no redirect-loop on `/auth/signin`. The unauthenticated branch — the test-plan's named anti-pattern — is exercised. `safeRedirectPath` has its own unit suite (`test/redirect.test.ts`). Genuine residual gaps: `isGated`'s sub-path matching (`pathname.startsWith(route + "/")`, `src/middleware.ts:11`) is untested — `/api/evaluate/x` and `/dashboard/x` are never asserted, and `/` matching *exactly* (not catching `/foo`) is implicit only.
+- **R3 (gate) is already well-covered.** `test/middleware.test.ts:48-99` exercises anon page → 302 to `/auth/signin` with the sanitized target, deep-link target preservation (path + query), anon `POST /api/evaluate` → 401 JSON, authenticated passthrough, and no redirect-loop on `/auth/signin`. The unauthenticated branch — the test-plan's named anti-pattern — is exercised. `safeRedirectPath` has its own unit suite (`test/redirect.test.ts`). Genuine residual gaps: `isGated`'s sub-path matching (`pathname.startsWith(route + "/")`, `src/middleware.ts:11`) is untested — `/api/evaluate/x` and `/dashboard/x` are never asserted, and `/` matching _exactly_ (not catching `/foo`) is implicit only.
 - **R4 (form path) has zero coverage.** Two untested layers:
   - **Endpoints** `src/pages/api/auth/signin.ts`, `signup.ts` — bad-creds bounce, success redirect, `not_configured` branch. The boundary is `createClient` from `@/lib/supabase`; `test/evaluate.test.ts:8` already establishes the mock-at-the-boundary pattern.
   - **Form components** `SignInForm.tsx`, `SignUpForm.tsx` — client-side validation, inline field errors, `ServerError` rendering, the hidden `redirect` field. These are native `method="POST"` forms (`SignInForm.tsx:44`) with no `fetch`; the server error returns via page reload + the `serverError` prop, so there is no in-component network call to mock.
 - **Toolchain gap.** `package.json` devDependencies have Vitest **4.1.7** but no jsdom, no `@testing-library/*`. `vitest.config.ts` runs everything in the default node environment and includes `test/**/*.test.ts`.
-- **§7 exclusion is binding.** Do not test Supabase's own auth mechanics; mock at the boundary (`createClient` for endpoints; the native POST *is* the boundary for the component — assert our wiring only).
+- **§7 exclusion is binding.** Do not test Supabase's own auth mechanics; mock at the boundary (`createClient` for endpoints; the native POST _is_ the boundary for the component — assert our wiring only).
 
 ## Desired End State
 
@@ -42,7 +42,7 @@ Four phases, ordered so the no-deps integration work and the isolated toolchain 
 ## Critical Implementation Details
 
 - **Vitest 4 environment selection.** Do not use `environmentMatchGlobs` (removed in v4). Put `// @vitest-environment jsdom` as the first line of each component test file. Keep `vitest.config.ts`'s global environment as the implicit node default so middleware/endpoint/RLS-adjacent tests stay in node. A shared setup file (jest-dom matchers) is registered via `test.setupFiles` — that is global, but only adds matchers, not an environment, so node tests are unaffected.
-- **42501 / redirect sanitization parity with the unit test.** The success-redirect assertion must prove the *endpoint* honors `safeRedirectPath`, not just that the unit function works: feed a crafted `redirect` form field (`//evil.com`) and assert the `Location` collapses to `/`. This is the integration-boundary proof the unit test can't give.
+- **42501 / redirect sanitization parity with the unit test.** The success-redirect assertion must prove the _endpoint_ honors `safeRedirectPath`, not just that the unit function works: feed a crafted `redirect` form field (`//evil.com`) and assert the `Location` collapses to `/`. This is the integration-boundary proof the unit test can't give.
 
 ## Phase 1: Component Test Infrastructure
 
@@ -118,6 +118,7 @@ Cover the endpoint half of R4 and close the small residual R3 gate gaps. Pure no
 **Intent**: Prove `POST /api/auth/signin` surfaces errors while preserving the redirect target, redirects only to sanitized same-site paths on success, and handles the unconfigured branch.
 
 **Contract**: Mock `@/lib/supabase` `createClient`. Import `POST` from `@/pages/api/auth/signin`. Build a context with a `formData`-bearing `Request` and a captured `locals.log` (reuse the `makeLog` shape from `test/evaluate.test.ts:22-36`). Assert on the redirect `Location`:
+
 - bad creds (`signInWithPassword` returns `{ error }`) → `Location` is `/auth/signin?error=…&redirect=…` with the original `redirect` field preserved (URL-decoded comparison).
 - success (`{ data: { user } }`) with a benign `redirect` field → `Location` equals that sanitized target; with a crafted `redirect=//evil.com` → `Location` collapses to `/`.
 - `createClient` returns `null` → `Location` is the `Supabase is not configured` bounce.
@@ -129,6 +130,7 @@ Cover the endpoint half of R4 and close the small residual R3 gate gaps. Pure no
 **Intent**: Prove `POST /api/auth/signup` routes success to confirm-email and bounces errors to the signup page.
 
 **Contract**: Same mock/context harness. Assert:
+
 - success (`signUp` returns `{ data: { user } }`) → `Location` is `/auth/confirm-email`.
 - error → `Location` is `/auth/signup?error=…`.
 - `createClient` null → `not_configured` bounce to `/auth/signup?error=…`. Note signup has **no** `redirect` param — do not assert one.
@@ -175,6 +177,7 @@ Cover the form half of R4 under jsdom: client validation, inline error display, 
 **Intent**: Prove the signin form gates invalid submits, surfaces inline and server errors, and carries the redirect target into its hidden field.
 
 **Contract**: First line `// @vitest-environment jsdom`. Render `SignInForm` with `@testing-library/react`; drive input with `user-event`. Assert:
+
 - submitting empty → inline "Email is required" / "Password is required" appear and the submit is prevented (the form's `onSubmit` `preventDefault`s; assert via a captured submit event's `defaultPrevented`, or that no navigation/error-free state results).
 - invalid email format → "Enter a valid email address".
 - typing into a field clears its error (`clearError`).
@@ -188,6 +191,7 @@ Cover the form half of R4 under jsdom: client validation, inline error display, 
 **Intent**: Prove the signup form's richer validation (password length, confirm-match) and server-error rendering.
 
 **Contract**: First line `// @vitest-environment jsdom`. Assert:
+
 - empty submit → required errors for email/password/confirm.
 - password shorter than 6 → length error; the "N more characters needed" hint renders while typing (`SignUpForm.tsx:57-63`).
 - mismatched confirm → "Passwords do not match".
@@ -343,25 +347,25 @@ None — additive test coverage and dev-only tooling. No schema, no production c
 
 #### Automated
 
-- [x] 3.1 Component tests pass under jsdom: `npm test`
-- [x] 3.2 All suites (node + jsdom) green in one run: `npm test`
-- [x] 3.3 Type checking passes: `npx astro check`
-- [x] 3.4 Linting passes: `npm run lint`
+- [x] 3.1 Component tests pass under jsdom: `npm test` — f3ff148
+- [x] 3.2 All suites (node + jsdom) green in one run: `npm test` — f3ff148
+- [x] 3.3 Type checking passes: `npx astro check` — f3ff148
+- [x] 3.4 Linting passes: `npm run lint` — f3ff148
 
 #### Manual
 
-- [x] 3.5 Tests assert our wiring only — no Supabase, no faked navigation (§7)
-- [x] 3.6 Valid-submit→redirect intentionally absent (owned by Phase 2) — boundary split reads clearly
+- [x] 3.5 Tests assert our wiring only — no Supabase, no faked navigation (§7) — f3ff148
+- [x] 3.6 Valid-submit→redirect intentionally absent (owned by Phase 2) — boundary split reads clearly — f3ff148
 
 ### Phase 4: Cookbook + Test-Plan Bookkeeping
 
 #### Automated
 
-- [ ] 4.1 Markdown format passes: `npm run format`
-- [ ] 4.2 No "TBD — see §3 Phase 2" strings remain in §6.2/§6.3
-- [ ] 4.3 Full test suite still green: `npm test`
+- [x] 4.1 Markdown format passes: `npm run format`
+- [x] 4.2 No "TBD — see §3 Phase 2" strings remain in §6.2/§6.3
+- [x] 4.3 Full test suite still green: `npm test`
 
 #### Manual
 
-- [ ] 4.4 §6.2/§6.3 recipes are actionable by a contributor who wasn't here
-- [ ] 4.5 §3 status and §4 stack rows match what landed on disk
+- [x] 4.4 §6.2/§6.3 recipes are actionable by a contributor who wasn't here
+- [x] 4.5 §3 status and §4 stack rows match what landed on disk
