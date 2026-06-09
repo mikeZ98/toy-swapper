@@ -329,11 +329,11 @@ None — additive dev tooling, new `e2e/` specs, and docs. No schema, no product
 
 #### Automated
 
-- [x] 4.1 Markdown formats cleanly: `npm run format`
-- [x] 4.2 No stale "e2e | none" claim remains that contradicts the new layer
+- [x] 4.1 Markdown formats cleanly: `npm run format` — 3b883fa
+- [x] 4.2 No stale "e2e | none" claim remains that contradicts the new layer — 3b883fa
 
 #### Manual
 
-- [x] 4.3 §4/§7 read coherently (layer exists AND cost×signal strategy intact)
-- [x] 4.4 §6 recipe is actionable (prereqs, run command, determinism guard)
-- [x] 4.5 CI deferral is explicit, not silent
+- [x] 4.3 §4/§7 read coherently (layer exists AND cost×signal strategy intact) — 3b883fa
+- [x] 4.4 §6 recipe is actionable (prereqs, run command, determinism guard) — 3b883fa
+- [x] 4.5 CI deferral is explicit, not silent — 3b883fa
