@@ -355,27 +355,27 @@ One new immutable migration; no data backfill (history accrues going forward). T
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npx astro check`
-- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 Type checking passes: `npx astro check` — 43a9ef7
+- [x] 2.2 Linting passes: `npm run lint` — 43a9ef7
 
 #### Manual
 
-- [x] 2.3 Read embeds `counterparties(name)` and orders `created_at desc`
-- [x] 2.4 Insert maps exactly the FR-018 fields from `EvaluateResponse` (no recomputation)
+- [x] 2.3 Read embeds `counterparties(name)` and orders `created_at desc` — 43a9ef7
+- [x] 2.4 Insert maps exactly the FR-018 fields from `EvaluateResponse` (no recomputation) — 43a9ef7
 
 ### Phase 3: Write Hook in the Evaluate Endpoint
 
 #### Automated
 
-- [ ] 3.1 Unit/integration tests pass: `npm test`
-- [ ] 3.2 Type checking passes: `npx astro check`
-- [ ] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 Unit/integration tests pass: `npm test`
+- [x] 3.2 Type checking passes: `npx astro check`
+- [x] 3.3 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.4 A real evaluation writes exactly one history row
-- [ ] 3.5 A NO-MATCH evaluation also writes a row (null counterparty_id/verdict/delta)
-- [ ] 3.6 A simulated save failure leaves the result intact (200), only a warn logged
+- [x] 3.4 A real evaluation writes exactly one history row
+- [x] 3.5 A NO-MATCH evaluation also writes a row (null counterparty_id/verdict/delta)
+- [x] 3.6 A simulated save failure leaves the result intact (200), only a warn logged
 
 ### Phase 4: /history Page + Gate + Nav
 
