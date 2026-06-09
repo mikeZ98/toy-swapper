@@ -381,14 +381,14 @@ One new immutable migration; no data backfill (history accrues going forward). T
 
 #### Automated
 
-- [x] 4.1 Production build succeeds: `npm run build`
-- [x] 4.2 Type checking passes: `npx astro check`
-- [x] 4.3 Linting passes: `npm run lint`
-- [x] 4.4 Anonymous `GET /history` → 302 redirect (middleware test): `npm test`
+- [x] 4.1 Production build succeeds: `npm run build` — 3c2352d
+- [x] 4.2 Type checking passes: `npx astro check` — 3c2352d
+- [x] 4.3 Linting passes: `npm run lint` — 3c2352d
+- [x] 4.4 Anonymous `GET /history` → 302 redirect (middleware test): `npm test` — 3c2352d
 
 #### Manual
 
-- [x] 4.5 Authenticated `/history` lists past evaluations most-recent-first; row expands to verbatim contract
-- [x] 4.6 A second account sees none of the first account's history (RLS)
-- [x] 4.7 Anonymous `/history` redirects to sign-in
-- [x] 4.8 Topbar "History" link navigates correctly
+- [x] 4.5 Authenticated `/history` lists past evaluations most-recent-first; row expands to verbatim contract — 3c2352d
+- [x] 4.6 A second account sees none of the first account's history (RLS) — 3c2352d
+- [x] 4.7 Anonymous `/history` redirects to sign-in — 3c2352d
+- [x] 4.8 Topbar "History" link navigates correctly — 3c2352d
