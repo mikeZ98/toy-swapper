@@ -313,31 +313,31 @@ None — additive test coverage and dev-only tooling. No schema, no production c
 
 #### Automated
 
-- [x] 1.1 Dependencies install cleanly: `npm install`
-- [x] 1.2 The smoke test passes under jsdom: `npm test`
-- [x] 1.3 Existing node tests still pass and stay in node env: `npm test`
-- [x] 1.4 Type checking passes: `npx astro check`
-- [x] 1.5 Linting passes: `npm run lint`
+- [x] 1.1 Dependencies install cleanly: `npm install` — 8226a04
+- [x] 1.2 The smoke test passes under jsdom: `npm test` — 8226a04
+- [x] 1.3 Existing node tests still pass and stay in node env: `npm test` — 8226a04
+- [x] 1.4 Type checking passes: `npx astro check` — 8226a04
+- [x] 1.5 Linting passes: `npm run lint` — 8226a04
 
 #### Manual
 
-- [x] 1.6 Node specs are not measurably slowed (no DOM global leakage)
-- [x] 1.7 `.tsx` test files are discovered by Vitest
+- [x] 1.6 Node specs are not measurably slowed (no DOM global leakage) — 8226a04
+- [x] 1.7 `.tsx` test files are discovered by Vitest — 8226a04
 
 ### Phase 2: Auth-Endpoint Integration Tests + R3 Gate Hardening
 
 #### Automated
 
-- [ ] 2.1 New endpoint tests pass: `npm test`
-- [ ] 2.2 Extended middleware tests pass: `npm test`
-- [ ] 2.3 User-facing `error` param asserted without raw log internals
-- [ ] 2.4 Type checking passes: `npx astro check`
-- [ ] 2.5 Linting passes: `npm run lint`
+- [x] 2.1 New endpoint tests pass: `npm test`
+- [x] 2.2 Extended middleware tests pass: `npm test`
+- [x] 2.3 User-facing `error` param asserted without raw log internals
+- [x] 2.4 Type checking passes: `npx astro check`
+- [x] 2.5 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.6 Success-redirect sanitization exercised through the endpoint (`//evil.com` → `/`)
-- [ ] 2.7 Endpoint tests mock only `createClient` (§7 respected)
+- [x] 2.6 Success-redirect sanitization exercised through the endpoint (`//evil.com` → `/`)
+- [x] 2.7 Endpoint tests mock only `createClient` (§7 respected)
 
 ### Phase 3: Auth Form Component Tests
 
