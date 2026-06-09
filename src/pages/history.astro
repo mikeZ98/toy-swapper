@@ -1,0 +1,89 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import { createClient } from "@/lib/supabase";
+import { getEvaluationHistory } from "@/lib/evaluation-history";
+import type { EvaluationHistoryItem } from "@/types";
+
+// Gated by middleware (see isGated), so the user is always present here; the
+// guard narrows the type and is unreachable in practice (the gate redirects
+// anonymous callers before this page renders).
+const { user, log } = Astro.locals;
+if (!user) {
+  throw new Error("unreachable: /history is gated by middleware");
+}
+
+// Read the user's history (FR-019). A read failure shows an error state rather
+// than crashing the page — the contract blob is the source of truth, displayed
+// verbatim (no re-render / re-evaluation, PRD NFR).
+let history: EvaluationHistoryItem[] = [];
+let loadError = false;
+try {
+  const supabase = createClient(Astro.request.headers, Astro.cookies);
+  history = await getEvaluationHistory(supabase, user.id);
+} catch (err) {
+  log.warn("evaluation_history.load_failed", { outcome: "failure", error: err });
+  loadError = true;
+}
+
+const PILL = "rounded-full px-3 py-1 text-xs font-semibold tracking-wide";
+function verdictPill(verdict: string | null): string {
+  if (verdict === "FAIR") return `${PILL} bg-emerald-500/15 text-emerald-200`;
+  if (verdict === "NEEDS BALANCING") return `${PILL} bg-amber-500/15 text-amber-200`;
+  return `${PILL} bg-rose-500/15 text-rose-200`;
+}
+---
+
+<Layout title="History">
+  <div class="bg-cosmic min-h-screen">
+    <main class="mx-auto max-w-2xl px-4 pt-16 pb-24">
+      <Topbar />
+
+      <h1
+        class="mt-8 mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-3xl font-extrabold text-transparent"
+      >
+        Evaluation history
+      </h1>
+
+      {
+        loadError ? (
+          <p class="rounded-xl border border-rose-500/30 bg-rose-900/20 px-4 py-3 text-center text-rose-200">
+            Couldn't load your history right now. Please try again later.
+          </p>
+        ) : history.length === 0 ? (
+          <p class="rounded-xl border border-white/10 bg-white/5 px-4 py-6 text-center text-blue-100/70">
+            No evaluations yet. Run one on the{" "}
+            <a href="/" class="text-purple-300 hover:underline">
+              evaluator
+            </a>{" "}
+            and it'll show up here.
+          </p>
+        ) : (
+          <ul class="space-y-4">
+            {history.map((row) => (
+              <li class="rounded-2xl border border-white/10 bg-white/10 text-white backdrop-blur-xl">
+                <details>
+                  <summary class="flex cursor-pointer flex-wrap items-center gap-2 px-5 py-4 outline-none focus-visible:ring-2 focus-visible:ring-purple-400">
+                    <span class:list={verdictPill(row.verdict)}>{row.verdict ?? "NO MATCH"}</span>
+                    <span class:list={`${PILL} bg-white/10 text-blue-100/80`}>
+                      {row.counterparty_name ?? "no match"}
+                    </span>
+                    <span class:list={`${PILL} bg-white/10 text-blue-100/80`}>
+                      delta: {row.delta_pln == null ? "n/a" : `${row.delta_pln} PLN`}
+                    </span>
+                    <span class:list={`${PILL} bg-indigo-500/15 text-indigo-200`}>source: {row.source}</span>
+                    <span class:list={`${PILL} bg-white/10 text-blue-100/80`}>threshold: {row.threshold_pct}%</span>
+                    <span class="ml-auto text-xs text-blue-100/50">{new Date(row.created_at).toLocaleString()}</span>
+                  </summary>
+                  <pre class="overflow-x-auto border-t border-white/10 px-5 py-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-blue-50">
+                    {row.contract}
+                  </pre>
+                </details>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </main>
+  </div>
+</Layout>

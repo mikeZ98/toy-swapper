@@ -367,28 +367,28 @@ One new immutable migration; no data backfill (history accrues going forward). T
 
 #### Automated
 
-- [x] 3.1 Unit/integration tests pass: `npm test`
-- [x] 3.2 Type checking passes: `npx astro check`
-- [x] 3.3 Linting passes: `npm run lint`
+- [x] 3.1 Unit/integration tests pass: `npm test` — 5ff2cda
+- [x] 3.2 Type checking passes: `npx astro check` — 5ff2cda
+- [x] 3.3 Linting passes: `npm run lint` — 5ff2cda
 
 #### Manual
 
-- [x] 3.4 A real evaluation writes exactly one history row
-- [x] 3.5 A NO-MATCH evaluation also writes a row (null counterparty_id/verdict/delta)
-- [x] 3.6 A simulated save failure leaves the result intact (200), only a warn logged
+- [x] 3.4 A real evaluation writes exactly one history row — 5ff2cda
+- [x] 3.5 A NO-MATCH evaluation also writes a row (null counterparty_id/verdict/delta) — 5ff2cda
+- [x] 3.6 A simulated save failure leaves the result intact (200), only a warn logged — 5ff2cda
 
 ### Phase 4: /history Page + Gate + Nav
 
 #### Automated
 
-- [ ] 4.1 Production build succeeds: `npm run build`
-- [ ] 4.2 Type checking passes: `npx astro check`
-- [ ] 4.3 Linting passes: `npm run lint`
-- [ ] 4.4 Anonymous `GET /history` → 302 redirect (middleware test): `npm test`
+- [x] 4.1 Production build succeeds: `npm run build`
+- [x] 4.2 Type checking passes: `npx astro check`
+- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.4 Anonymous `GET /history` → 302 redirect (middleware test): `npm test`
 
 #### Manual
 
-- [ ] 4.5 Authenticated `/history` lists past evaluations most-recent-first; row expands to verbatim contract
-- [ ] 4.6 A second account sees none of the first account's history (RLS)
-- [ ] 4.7 Anonymous `/history` redirects to sign-in
-- [ ] 4.8 Topbar "History" link navigates correctly
+- [x] 4.5 Authenticated `/history` lists past evaluations most-recent-first; row expands to verbatim contract
+- [x] 4.6 A second account sees none of the first account's history (RLS)
+- [x] 4.7 Anonymous `/history` redirects to sign-in
+- [x] 4.8 Topbar "History" link navigates correctly
