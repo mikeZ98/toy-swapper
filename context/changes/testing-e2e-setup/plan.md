@@ -44,7 +44,7 @@ Four phases, ordered so the harness lands and self-verifies before taking on the
 - **Determinism is an assertion, not just an env assumption.** The evaluator spec asserts the rendered `source` pill reads `stub`. If `OPENAI_API_KEY` is set in `.dev.vars`, the evaluator takes the LLM path and the assertion fails loudly — which is the correct signal that the run is non-deterministic. Document "unset OPENAI_API_KEY for e2e" as a prerequisite.
 - **storageState holds a live token.** The captured session file (e.g. `e2e/.auth/user.json`) must be gitignored before it is ever generated — add the ignore entry in Phase 1, not Phase 2.
 - **`build` + `preview` boot is slow.** Playwright's `webServer.timeout` must allow for a full `astro build` before the suite starts; set a generous timeout and `reuseExistingServer: !process.env.CI`.
-- **Gate vs session ordering.** `global-setup` must ensure the test user exists (idempotent signUp, tolerating "already registered") *before* driving the signin form, or the form bounce will have no valid credentials to succeed with.
+- **Gate vs session ordering.** `global-setup` must ensure the test user exists (idempotent signUp, tolerating "already registered") _before_ driving the signin form, or the form bounce will have no valid credentials to succeed with.
 
 ## Phase 1: Playwright Harness + App Boot + Unauth Smoke
 
@@ -314,26 +314,26 @@ None — additive dev tooling, new `e2e/` specs, and docs. No schema, no product
 
 #### Automated
 
-- [x] 3.1 Evaluator spec passes (Supabase up, OPENAI_API_KEY unset): `npx playwright test evaluate.spec.ts`
-- [x] 3.2 Full e2e suite green in one run: `npx playwright test`
-- [x] 3.3 Linting passes: `npm run lint`
-- [x] 3.4 Type checking passes: `npx astro check`
+- [x] 3.1 Evaluator spec passes (Supabase up, OPENAI_API_KEY unset): `npx playwright test evaluate.spec.ts` — 82bafc6
+- [x] 3.2 Full e2e suite green in one run: `npx playwright test` — 82bafc6
+- [x] 3.3 Linting passes: `npm run lint` — 82bafc6
+- [x] 3.4 Type checking passes: `npx astro check` — 82bafc6
 
 #### Manual
 
-- [x] 3.5 Rendered contract is deterministic stub output (`source: stub`), reproducible
-- [x] 3.6 Spec exercises the real inline script (fetch + render), not a mock
-- [x] 3.7 Clear action resets the page to initial state
+- [x] 3.5 Rendered contract is deterministic stub output (`source: stub`), reproducible — 82bafc6
+- [x] 3.6 Spec exercises the real inline script (fetch + render), not a mock — 82bafc6
+- [x] 3.7 Clear action resets the page to initial state — 82bafc6
 
 ### Phase 4: Documentation
 
 #### Automated
 
-- [ ] 4.1 Markdown formats cleanly: `npm run format`
-- [ ] 4.2 No stale "e2e | none" claim remains that contradicts the new layer
+- [x] 4.1 Markdown formats cleanly: `npm run format`
+- [x] 4.2 No stale "e2e | none" claim remains that contradicts the new layer
 
 #### Manual
 
-- [ ] 4.3 §4/§7 read coherently (layer exists AND cost×signal strategy intact)
-- [ ] 4.4 §6 recipe is actionable (prereqs, run command, determinism guard)
-- [ ] 4.5 CI deferral is explicit, not silent
+- [x] 4.3 §4/§7 read coherently (layer exists AND cost×signal strategy intact)
+- [x] 4.4 §6 recipe is actionable (prereqs, run command, determinism guard)
+- [x] 4.5 CI deferral is explicit, not silent
