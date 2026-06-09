@@ -342,26 +342,26 @@ One new immutable migration; no data backfill (history accrues going forward). T
 
 #### Automated
 
-- [x] 1.1 Migration applies from scratch: `npx supabase db reset`
-- [x] 1.2 pgTAP suite passes incl. new test: `npm run db:test`
-- [x] 1.3 DB lint clean: `npx supabase db lint --level warning`
+- [x] 1.1 Migration applies from scratch: `npx supabase db reset` — 5adb1c5
+- [x] 1.2 pgTAP suite passes incl. new test: `npm run db:test` — 5adb1c5
+- [x] 1.3 DB lint clean: `npx supabase db lint --level warning` — 5adb1c5
 
 #### Manual
 
-- [x] 1.4 Append-only confirmed (no `UNIQUE(user_id)`, no update policy)
-- [x] 1.5 Policies use `app.current_user_id()`, not inlined `auth.uid()`
+- [x] 1.4 Append-only confirmed (no `UNIQUE(user_id)`, no update policy) — 5adb1c5
+- [x] 1.5 Policies use `app.current_user_id()`, not inlined `auth.uid()` — 5adb1c5
 
 ### Phase 2: Service Layer
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npx astro check`
-- [ ] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 Type checking passes: `npx astro check`
+- [x] 2.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.3 Read embeds `counterparties(name)` and orders `created_at desc`
-- [ ] 2.4 Insert maps exactly the FR-018 fields from `EvaluateResponse` (no recomputation)
+- [x] 2.3 Read embeds `counterparties(name)` and orders `created_at desc`
+- [x] 2.4 Insert maps exactly the FR-018 fields from `EvaluateResponse` (no recomputation)
 
 ### Phase 3: Write Hook in the Evaluate Endpoint
 

@@ -35,11 +35,30 @@ export interface EvaluateRequest {
   want: string;
 }
 
+export type EvaluationSource = "llm" | "stub" | "llm-failed-fallback";
+
 export interface EvaluateResponse {
   contract: string;
   counterparty_id: string | null;
   verdict: Verdict | null;
   delta_pln: number | null;
   threshold_pct: number;
-  source: "llm" | "stub" | "llm-failed-fallback";
+  source: EvaluationSource;
+}
+
+/**
+ * A persisted evaluation-history row as shown on `/history` (S-03 / FR-019):
+ * the FR-018 fields plus the resolved counterparty name (joined at read from
+ * `counterparties`, null for NO-MATCH rows) and the row id / server timestamp.
+ */
+export interface EvaluationHistoryItem {
+  id: string;
+  contract: string;
+  counterparty_id: string | null;
+  counterparty_name: string | null;
+  verdict: Verdict | null;
+  delta_pln: number | null;
+  threshold_pct: number;
+  source: EvaluationSource;
+  created_at: string;
 }
