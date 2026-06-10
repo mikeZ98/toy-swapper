@@ -3,7 +3,7 @@ project: ToySwapper
 version: 1
 status: draft
 created: 2026-05-29
-updated: 2026-06-03
+updated: 2026-06-10
 prd_version: 2
 main_goal: quality
 top_blocker: decisions
@@ -34,7 +34,6 @@ ToySwapper turns two parents' freeform descriptions of items they have and want 
 | S-02 | restore-saved-lists | return to the evaluator in a new session and find their last give/want lists pre-filled, scoped to their account | F-01, S-01 | US-04, FR-016 | done |
 | S-03 | evaluation-history | browse a list of their past contracts (most recent first), expand any row to see the original Markdown verbatim | F-01, F-02, S-01 | US-05, FR-018, FR-019 | proposed |
 | S-06 | ux-ui-improvements | use a polished evaluator UI — consistent Tailwind v4 styling, loading states during evaluation, and refined layout | F-01 | NFR (quality bias) | done |
-| S-07 | auth-frontend-views | sign in and sign up through dedicated `/auth/signin` and `/auth/signup` pages wired to Supabase Auth | F-01 | US-03, FR-012, FR-013 | planned |
 
 ## Streams
 
@@ -44,7 +43,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 |---|---|---|---|
 | A | Data + persistence | `F-01` → `F-02` → `S-02` → `S-03` | The Postgres-and-RLS spine; `S-02` joins Stream B at `S-01` (needs the gate). Carries the north star. |
 | B | Auth gate + observability | `F-03` → `S-01` | Observability lands before the gate so RLS denials are observable from the first authenticated request. Joins Stream A via `S-02` and `S-03`. |
-| C | Frontend polish + auth views | `F-01` → (`S-06` ∥ `S-07`) | Independent presentation track. Both slices need only `F-01` (done) and run in parallel with each other — no shared code surface, no dependency on Streams A/B beyond the F-01 baseline. |
+| C | Frontend polish | `F-01` → `S-06` | Independent presentation track. Needs only `F-01` (done) — no shared code surface, no dependency on Streams A/B beyond the F-01 baseline. |
 
 ## Baseline
 
@@ -147,23 +146,11 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Change ID:** ux-ui-improvements
 - **PRD refs:** NFR (quality bias from §Success Criteria → Guardrails)
 - **Prerequisites:** F-01
-- **Parallel with:** S-07
+- **Parallel with:** —
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Low-risk presentational slice, sequenced as independent parallel work. Risk: styling churn touches shared components and regresses the evaluator layout; mitigated by scoping strictly to presentational changes — no edits to the evaluate or persistence code paths — and using the `cn()` helper plus existing shadcn/ui primitives rather than hand-rolled class strings.
 - **Status:** done
-
-### S-07: Auth Frontend Views
-
-- **Outcome:** user can sign in and sign up through dedicated `/auth/signin` and `/auth/signup` pages wired to Supabase Auth via the existing `src/pages/api/auth/*` endpoints; failed credentials surface an inline error, and a successful sign-in lands the user back on the gated evaluator.
-- **Change ID:** auth-frontend-views
-- **PRD refs:** US-03, FR-012, FR-013
-- **Prerequisites:** F-01
-- **Parallel with:** S-06
-- **Blockers:** —
-- **Unknowns:** —
-- **Risk:** Risk: the new pages duplicate or drift from the existing `src/pages/api/auth/*` contract and the S-01 gating flow; mitigated by reusing the starter's auth endpoints and Supabase SSR client rather than introducing a new auth path, and validating against the S-01 redirect/401 behavior.
-- **Status:** planned
 
 ## Backlog Handoff
 
@@ -175,8 +162,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-01 | gated-evaluator | Gate `/` and `/api/evaluate` behind Supabase auth | no | Blocked on OQ-5 (anonymous demo path) |
 | S-02 | restore-saved-lists | Persist and restore user's give/want lists | no | Blocked on OQ-4 (save granularity) + prereqs |
 | S-03 | evaluation-history | Persist evaluations and surface history list | no | Prereqs F-01, F-02, S-01 not yet done |
-| S-06 | ux-ui-improvements | Polish evaluator UI: Tailwind v4 styling, loading states, layout | yes | Prereq F-01 done; run `/10x-plan ux-ui-improvements`. Parallel with S-07 |
-| S-07 | auth-frontend-views | Build `/auth/signin` + `/auth/signup` views wired to Supabase Auth | yes | Prereq F-01 done; run `/10x-plan auth-frontend-views`. Parallel with S-06 |
+| S-06 | ux-ui-improvements | Polish evaluator UI: Tailwind v4 styling, loading states, layout | yes | Prereq F-01 done; run `/10x-plan ux-ui-improvements` |
 
 ## Open Roadmap Questions
 
