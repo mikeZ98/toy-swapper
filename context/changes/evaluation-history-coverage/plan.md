@@ -212,26 +212,26 @@ None — no schema or migration changes. Test SQL files are not immutable (only 
 
 #### Automated
 
-- [x] 1.1 pgTAP suite passes: `npm run db:test`
-- [x] 1.2 SQL lint clean: `npx supabase db lint --level warning`
-- [x] 1.3 Plan count matches assertions (no plan-mismatch in run output)
+- [x] 1.1 pgTAP suite passes: `npm run db:test` — 70096ef
+- [x] 1.2 SQL lint clean: `npx supabase db lint --level warning` — 70096ef
+- [x] 1.3 Plan count matches assertions (no plan-mismatch in run output) — 70096ef
 
 #### Manual
 
-- [x] 1.4 Reverting the SELECT control mutation makes its assertion fail (causally bound)
-- [x] 1.5 Reverting the INSERT control mutation flips the write back to `42501`
-- [x] 1.6 Unmutated suite is green end-to-end
+- [x] 1.4 Reverting the SELECT control mutation makes its assertion fail (causally bound) — 70096ef
+- [x] 1.5 Reverting the INSERT control mutation flips the write back to `42501` — 70096ef
+- [x] 1.6 Unmutated suite is green end-to-end — 70096ef
 
 ### Phase 2: Vitest service suite + R5 guard (R5)
 
 #### Automated
 
-- [ ] 2.1 New suite passes: `npm test`
-- [ ] 2.2 No TS errors in `test/evaluation-history.test.ts`
-- [ ] 2.3 Lint passes: `npm run lint`
-- [ ] 2.4 Every exported-function branch in `evaluation-history.ts` is exercised
+- [x] 2.1 New suite passes: `npm test`
+- [x] 2.2 No TS errors in `test/evaluation-history.test.ts`
+- [x] 2.3 Lint passes: `npm run lint`
+- [x] 2.4 Every exported-function branch in `evaluation-history.ts` is exercised
 
 #### Manual
 
-- [ ] 2.5 Changing the R5 contract assertion to the renamed name makes the test fail (pins byte-identity)
-- [ ] 2.6 Suite mirrors `test/user-lists.test.ts` structure (parity on diff)
+- [x] 2.5 Changing the R5 contract assertion to the renamed name makes the test fail (pins byte-identity)
+- [x] 2.6 Suite mirrors `test/user-lists.test.ts` structure (parity on diff)
