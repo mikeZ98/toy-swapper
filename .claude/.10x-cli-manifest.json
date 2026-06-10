@@ -1,0 +1,23 @@
+{
+  "package": "@przeprogramowani/10x-cli",
+  "version": "1.8.0",
+  "manifestVersion": 3,
+  "lastApplied": "2026-06-10T06:00:50.094Z",
+  "lessonId": "m4l1",
+  "course": "10xdevs3",
+  "tool": "claude-code",
+  "files": {
+    "skills": {},
+    "prompts": [],
+    "configs": [],
+    "promptHashes": {}
+  },
+  "lessons": {
+    "m4l1": {
+      "appliedAt": "2026-06-10T06:00:50.094Z",
+      "skills": {},
+      "prompts": [],
+      "configs": []
+    }
+  }
+}
