@@ -1,10 +1,10 @@
 ---
 change_id: evaluation-history-coverage
 title: Evaluation history coverage
-status: implemented
+status: archived
 created: 2026-06-10
 updated: 2026-06-10
-archived_at: null
+archived_at: 2026-06-10T05:26:10Z
 ---
 
 ## Notes
