@@ -226,12 +226,12 @@ None — no schema or migration changes. Test SQL files are not immutable (only 
 
 #### Automated
 
-- [x] 2.1 New suite passes: `npm test`
-- [x] 2.2 No TS errors in `test/evaluation-history.test.ts`
-- [x] 2.3 Lint passes: `npm run lint`
-- [x] 2.4 Every exported-function branch in `evaluation-history.ts` is exercised
+- [x] 2.1 New suite passes: `npm test` — 1266719
+- [x] 2.2 No TS errors in `test/evaluation-history.test.ts` — 1266719
+- [x] 2.3 Lint passes: `npm run lint` — 1266719
+- [x] 2.4 Every exported-function branch in `evaluation-history.ts` is exercised — 1266719
 
 #### Manual
 
-- [x] 2.5 Changing the R5 contract assertion to the renamed name makes the test fail (pins byte-identity)
-- [x] 2.6 Suite mirrors `test/user-lists.test.ts` structure (parity on diff)
+- [x] 2.5 Changing the R5 contract assertion to the renamed name makes the test fail (pins byte-identity) — 1266719
+- [x] 2.6 Suite mirrors `test/user-lists.test.ts` structure (parity on diff) — 1266719
