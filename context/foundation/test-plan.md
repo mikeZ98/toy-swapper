@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-09 (e2e setup → Playwright layer added, externally-motivated; §4 e2e row + §5 CI-deferral + §6.5 recipe + §7 boundary)
+> Last updated: 2026-06-10 (§3 Phase 3 "Evaluation-history coverage" complete — pgTAP negative controls for R1 + Vitest service suite & R5 byte-identical guard)
 
 ## 1. Strategy
 
@@ -85,15 +85,19 @@ orchestrator updates Status as artifacts appear on disk.
 | --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------- | ----------- | ------------------------------------------------------ |
 | 1   | RLS test integrity + isolation proof | Make every RLS test provably fail when its policy is removed, and lock cross-account isolation on existing user-scoped tables | #2, #1        | integration (pgTAP, negative-control) | complete    | context/archive/2026-06-08-testing-rls-test-integrity/ |
 | 2   | Auth gate + signin/signup form path  | Prove the gate contract (redirect / 401 / target) holds and the form surfaces errors and redirects correctly                  | #3, #4        | integration + component               | complete    | context/changes/testing-auth-gate/                     |
-| 3   | Evaluation-history coverage          | Prove history rows are per-account isolated and stored byte-identical                                                         | #1, #5        | integration (pgTAP) + integration     | not started | —                                                      |
+| 3   | Evaluation-history coverage          | Prove history rows are per-account isolated and stored byte-identical                                                         | #1, #5        | integration (pgTAP) + integration     | complete    | context/changes/evaluation-history-coverage/           |
 
 Status vocabulary (fixed): `not started` → `change opened` → `researched` →
 `planned` → `implementing` → `complete`.
 
-Phase 3 note: R1 and R5 partly depend on S-03 (`proposed` in the roadmap, not
-yet built). Phase 3's `/10x-research` step must confirm the history feature
-exists before driving tests, or flag it as a build prerequisite. Phase 3
-reuses the proven RLS-test pattern that Phase 1 establishes.
+Phase 3 note (complete, 2026-06-10): S-03 shipped, so R1 and R5 were driven
+against the live `evaluation_history` table. R1 reuses the Phase 1 RLS-test
+pattern — `supabase/tests/evaluation-history.test.sql` now carries SELECT +
+INSERT negative controls (append-only table → no third-user trick). R5 is
+proven at the Vitest service layer via a join-rename guard in
+`test/evaluation-history.test.ts` (the stored contract is served byte-identical
+even when the live counterparty is renamed), not at pgTAP — a SQL byte
+round-trip would mostly test Postgres text storage (low signal, §1).
 
 ## 4. Stack
 
