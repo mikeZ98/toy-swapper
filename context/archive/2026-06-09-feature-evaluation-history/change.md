@@ -1,10 +1,10 @@
 ---
 change_id: feature-evaluation-history
 title: Feature evaluation history
-status: implemented
+status: archived
 created: 2026-06-09
-updated: 2026-06-09
-archived_at: null
+updated: 2026-06-10
+archived_at: 2026-06-10T04:27:02Z
 ---
 
 ## Notes
