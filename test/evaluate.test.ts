@@ -51,6 +51,21 @@ function makeContext(body: unknown, log: Logger, user: { id: string } | null = n
   return ctx as unknown as Parameters<typeof POST>[0];
 }
 
+// Variant of makeContext that sends a RAW (non-JSON-stringified) body, so
+// `request.json()` rejects — needed to exercise the invalid-JSON 400 path.
+function makeRawContext(rawBody: string, log: Logger, user: { id: string } | null = null): Parameters<typeof POST>[0] {
+  const ctx = {
+    request: new Request("http://localhost/api/evaluate", {
+      method: "POST",
+      body: rawBody,
+      headers: { "content-type": "application/json" },
+    }),
+    cookies: {} as AstroCookies,
+    locals: { log, requestId: "test-req", user },
+  };
+  return ctx as unknown as Parameters<typeof POST>[0];
+}
+
 const OK_RESPONSE: EvaluateResponse = {
   contract: "# contract",
   counterparty_id: null,
@@ -135,5 +150,38 @@ describe("POST /api/evaluate — structured logging", () => {
 
     expect(res.status).toBe(200);
     expect(events.some((e) => e.event === "evaluation_history.save_failed")).toBe(true);
+  });
+});
+
+describe("POST /api/evaluate — input validation (400)", () => {
+  it("returns 400 'invalid JSON body' on a malformed request body", async () => {
+    const { log } = makeLog();
+    const res = await POST(makeRawContext("{ not valid json", log));
+
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "invalid JSON body" });
+    // Validation short-circuits before the engine and pool are reached.
+    expect(vi.mocked(evaluate)).not.toHaveBeenCalled();
+    expect(vi.mocked(getCounterpartyPool)).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 'validation failed' with issues when give/want are missing or empty", async () => {
+    const { log } = makeLog();
+    const res = await POST(makeContext({ give: "" }, log)); // empty give, missing want
+
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { error: string; issues: unknown[] };
+    expect(body.error).toBe("validation failed");
+    expect(Array.isArray(body.issues)).toBe(true);
+    expect(body.issues.length).toBeGreaterThan(0);
+    expect(vi.mocked(evaluate)).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when threshold_pct is out of the 1–99 range", async () => {
+    const { log } = makeLog();
+    const res = await POST(makeContext({ give: "a", want: "b", threshold_pct: 100 }, log));
+
+    expect(res.status).toBe(400);
+    expect(vi.mocked(evaluate)).not.toHaveBeenCalled();
   });
 });
