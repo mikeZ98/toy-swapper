@@ -211,17 +211,17 @@ None — additive test-only change; no schema, data, or API change.
 
 #### Automated
 
-- [ ] 1.1 New file present: `test -f test/evaluator-llm.test.ts`
-- [ ] 1.2 Full suite green: `npm run test`
-- [ ] 1.3 Type check clean: `npx tsc --noEmit`
-- [ ] 1.4 Lint clean: `npm run lint`
-- [ ] 1.5 Production untouched (`git diff --name-only` only under `test/`)
+- [x] 1.1 New file present: `test -f test/evaluator-llm.test.ts`
+- [x] 1.2 Full suite green: `npm run test`
+- [x] 1.3 Type check clean: `npx tsc --noEmit`
+- [x] 1.4 Lint clean: `npm run lint`
+- [x] 1.5 Production untouched (`git diff --name-only` only under `test/`)
 
 #### Manual
 
-- [ ] 1.6 LLM test fails if temperature/seed change away from 0/42
-- [ ] 1.7 Fallback test genuinely exercises the catch (flip mock → test fails)
-- [ ] 1.8 No real network call occurs (runs offline, no API key)
+- [x] 1.6 LLM test fails if temperature/seed change away from 0/42
+- [x] 1.7 Fallback test genuinely exercises the catch (flip mock → test fails)
+- [x] 1.8 No real network call occurs (runs offline, no API key)
 
 ### Phase 2: Handler 400 input-validation tests
 
