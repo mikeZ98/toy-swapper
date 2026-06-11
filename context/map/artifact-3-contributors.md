@@ -15,10 +15,10 @@ team to map; domain expertise is concentrated in one person, with Claude as an A
 
 ## Identity reconciliation
 
-| Git author | Email | Hot-path commits | Active window | Verdict |
-|---|---|---|---|---|
-| **Michał Zasiadczuk** | `m.zasiadczuk.98@gmail.com` | 13 | 2026-05-29 → 06-11 (full span) | Canonical repo-local identity. |
-| Michal_MAC | `michal_mac@MacBook-Air-Michal-MAC.local` | 2 | 2026-05-29 only | **Same human** — hostname-default email from day 1 before the repo-local identity was set. |
+| Git author            | Email                                     | Hot-path commits | Active window                  | Verdict                                                                                    |
+| --------------------- | ----------------------------------------- | ---------------- | ------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Michał Zasiadczuk** | `m.zasiadczuk.98@gmail.com`               | 13               | 2026-05-29 → 06-11 (full span) | Canonical repo-local identity.                                                             |
+| Michal_MAC            | `michal_mac@MacBook-Air-Michal-MAC.local` | 2                | 2026-05-29 only                | **Same human** — hostname-default email from day 1 before the repo-local identity was set. |
 
 The two names are **one person**. The `Michal_MAC` identity is the un-configured machine
 default (`user@hostname.local`) used only on the first day; commits after 2026-05-29 all carry
@@ -27,46 +27,46 @@ no machine-wide git identity was set, only a repo-local one.)
 
 ## Bot / noise discarded
 
-| Discarded | Count (hot path) | Reason |
-|---|---|---|
-| `Co-Authored-By: Claude Opus 4.8` | 10 | AI co-author trailer — not a human contributor. |
-| `Co-Authored-By: Claude Opus 4.7 (1M context)` | 3 | AI co-author trailer. |
-| `Co-Authored-By: Claude Opus 4.7` | 2 | AI co-author trailer. |
-| Merge commits | 0 | None touched the hot path (linear history). |
+| Discarded                                      | Count (hot path) | Reason                                          |
+| ---------------------------------------------- | ---------------- | ----------------------------------------------- |
+| `Co-Authored-By: Claude Opus 4.8`              | 10               | AI co-author trailer — not a human contributor. |
+| `Co-Authored-By: Claude Opus 4.7 (1M context)` | 3                | AI co-author trailer.                           |
+| `Co-Authored-By: Claude Opus 4.7`              | 2                | AI co-author trailer.                           |
+| Merge commits                                  | 0                | None touched the hot path (linear history).     |
 
 **Read:** 15 of the hot-path commits were AI-assisted (Claude). The repo is built with an
 AI-pair workflow, but all authorship/decision ownership is human-singular.
 
 ## Hot-path commit authorship (human, no merges)
 
-| File | Michał Zasiadczuk | Michal_MAC (day-1 self) | Total human commits |
-|---|---|---|---|
-| `src/pages/index.astro` | 5 | 1 | 6 |
-| `src/pages/api/evaluate.ts` | 4 | 1 | 5 |
-| `src/middleware.ts` | 4 | 1 | 5 |
-| **Combined** | **13** | **2** | **15** |
+| File                        | Michał Zasiadczuk | Michal_MAC (day-1 self) | Total human commits |
+| --------------------------- | ----------------- | ----------------------- | ------------------- |
+| `src/pages/index.astro`     | 5                 | 1                       | 6                   |
+| `src/pages/api/evaluate.ts` | 4                 | 1                       | 5                   |
+| `src/middleware.ts`         | 4                 | 1                       | 5                   |
+| **Combined**                | **13**            | **2**                   | **15**              |
 
 ## Current line ownership (`git blame`)
 
 Surviving lines in the working tree, by authoring identity:
 
-| File | Lines | Michal_MAC (day-1) | Michał Zasiadczuk (later) |
-|---|---|---|---|
-| `src/pages/index.astro` | 280 | 172 (61%) | 108 (39%) |
-| `src/pages/api/evaluate.ts` | 88 | 51 (58%) | 37 (42%) |
-| `src/middleware.ts` | 67 | 20 (30%) | 47 (70%) |
+| File                        | Lines | Michal_MAC (day-1) | Michał Zasiadczuk (later) |
+| --------------------------- | ----- | ------------------ | ------------------------- |
+| `src/pages/index.astro`     | 280   | 172 (61%)          | 108 (39%)                 |
+| `src/pages/api/evaluate.ts` | 88    | 51 (58%)           | 37 (42%)                  |
+| `src/middleware.ts`         | 67    | 20 (30%)           | 47 (70%)                  |
 
-**Read:** the *foundational scaffolding* of `index.astro` and `evaluate.ts` was written on day 1
+**Read:** the _foundational scaffolding_ of `index.astro` and `evaluate.ts` was written on day 1
 (and still survives as the majority of current lines), while `middleware.ts` is mostly later
 work (the v2 auth-gate, S-01). Either way the author is the same human — the split is temporal
 (day-1 vs. later), not interpersonal.
 
 ## Who to ask (de facto)
 
-| Domain | Expert | Notes |
-|---|---|---|
-| Everything | **Michał Zasiadczuk** (`m.zasiadczuk.98@gmail.com`) | Sole maintainer; wrote/owns 100% of the hot path across both identities. |
-| AI-assist context | Commit `Co-Authored-By` trailers | Decisions were AI-paired; the change folders under `context/changes/**` carry the reasoning (plan/research). |
+| Domain            | Expert                                              | Notes                                                                                                        |
+| ----------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Everything        | **Michał Zasiadczuk** (`m.zasiadczuk.98@gmail.com`) | Sole maintainer; wrote/owns 100% of the hot path across both identities.                                     |
+| AI-assist context | Commit `Co-Authored-By` trailers                    | Decisions were AI-paired; the change folders under `context/changes/**` carry the reasoning (plan/research). |
 
 There is **no second human** to escalate to. For onboarding purposes, the durable "expert" is
 the `context/` methodology trail (PRD, roadmap, per-change plans), not a roster of people.
