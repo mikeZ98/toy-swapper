@@ -1,10 +1,10 @@
 ---
 change_id: context-architecture-m4
 title: Context architecture m4
-status: implemented
+status: archived
 created: 2026-06-11
 updated: 2026-06-11
-archived_at: null
+archived_at: 2026-06-11T08:38:53Z
 ---
 
 ## Notes
