@@ -304,28 +304,28 @@ No data or code migration. The only "migration" is content relocation; the origi
 
 #### Automated
 
-- [x] 3.1 `CLAUDE.md` contains the `@context/foundation/conventions.md` import
-- [x] 3.2 `AGENTS.md` points to conventions.md
-- [x] 3.3 Both root files shrank materially (`wc -l`)
-- [x] 3.4 Prettier clean on both root files
-- [x] 3.5 No canonical rule body duplicated across root + conventions.md
+- [x] 3.1 `CLAUDE.md` contains the `@context/foundation/conventions.md` import — 5d9265e
+- [x] 3.2 `AGENTS.md` points to conventions.md — 5d9265e
+- [x] 3.3 Both root files shrank materially (`wc -l`) — 5d9265e
+- [x] 3.4 Prettier clean on both root files — 5d9265e
+- [x] 3.5 No canonical rule body duplicated across root + conventions.md — 5d9265e
 
 #### Manual
 
-- [x] 3.6 Claude Code inlines conventions.md via root CLAUDE.md
-- [x] 3.7 AGENTS.md reads as coherent standalone onboarding doc
-- [x] 3.8 Day-to-day contributor info findable in ≤1 hop
+- [x] 3.6 Claude Code inlines conventions.md via root CLAUDE.md — 5d9265e
+- [x] 3.7 AGENTS.md reads as coherent standalone onboarding doc — 5d9265e
+- [x] 3.8 Day-to-day contributor info findable in ≤1 hop — 5d9265e
 
 ### Phase 4: Verify redistribution & sync
 
 #### Automated
 
-- [ ] 4.1 Coverage map exists
-- [ ] 4.2 No invariant keyword orphaned across the new layout
-- [ ] 4.3 `npm run build` still green
+- [x] 4.1 Coverage map exists
+- [x] 4.2 No invariant keyword orphaned across the new layout
+- [x] 4.3 `npm run build` still green
 
 #### Manual
 
-- [ ] 4.4 Every coverage-map row has a destination; no lost rule
-- [ ] 4.5 Nested CLAUDE.md surfaces when touching `src/lib/` and `src/pages/api/`
-- [ ] 4.6 Diverged rules read identically to the PRD in their canonical home
+- [x] 4.4 Every coverage-map row has a destination; no lost rule
+- [x] 4.5 Nested CLAUDE.md surfaces when touching `src/lib/` and `src/pages/api/`
+- [x] 4.6 Diverged rules read identically to the PRD in their canonical home
