@@ -1,10 +1,10 @@
 ---
 change_id: evaluate-flow-analysis
 title: Deep Focus analysis of the core evaluation pipeline
-status: implemented
+status: archived
 created: 2026-06-11
 updated: 2026-06-11
-archived_at: null
+archived_at: 2026-06-11T10:46:24Z
 ---
 
 ## Notes
