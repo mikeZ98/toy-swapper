@@ -276,29 +276,29 @@ No data or code migration. The only "migration" is content relocation; the origi
 
 #### Automated
 
-- [x] 1.1 File exists: `test -f context/foundation/conventions.md`
-- [x] 1.2 Markdown well-formed: `npx prettier --check context/foundation/conventions.md`
-- [x] 1.3 No placeholder tokens / dangling references
+- [x] 1.1 File exists: `test -f context/foundation/conventions.md` — b122e8e
+- [x] 1.2 Markdown well-formed: `npx prettier --check context/foundation/conventions.md` — b122e8e
+- [x] 1.3 No placeholder tokens / dangling references — b122e8e
 
 #### Manual
 
-- [x] 1.4 Every PRD-locked rule appears once; diverged rules match PRD wording
-- [x] 1.5 No folder-specific guidance leaked in
-- [x] 1.6 Full global picture readable from this one file
+- [x] 1.4 Every PRD-locked rule appears once; diverged rules match PRD wording — b122e8e
+- [x] 1.5 No folder-specific guidance leaked in — b122e8e
+- [x] 1.6 Full global picture readable from this one file — b122e8e
 
 ### Phase 2: Nested folder context files
 
 #### Automated
 
-- [ ] 2.1 Both nested files exist
-- [ ] 2.2 Markdown well-formed (prettier)
-- [ ] 2.3 Module/route maps match filesystem (no missing/extra entries)
+- [x] 2.1 Both nested files exist
+- [x] 2.2 Markdown well-formed (prettier)
+- [x] 2.3 Module/route maps match filesystem (no missing/extra entries)
 
 #### Manual
 
-- [ ] 2.4 Nested files reference conventions.md, don't restate global rules
-- [ ] 2.5 `src/lib/services/` reads as future convention, not existing dir
-- [ ] 2.6 Local contract + per-file concern clear from each nested file
+- [x] 2.4 Nested files reference conventions.md, don't restate global rules
+- [x] 2.5 `src/lib/services/` reads as future convention, not existing dir
+- [x] 2.6 Local contract + per-file concern clear from each nested file
 
 ### Phase 3: Slim the root monolith
 
