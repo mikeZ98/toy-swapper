@@ -14,7 +14,7 @@
 
 ## 1. TL;DR
 
-ToySwapper is an Astro 6 SSR app (React 19 islands, Tailwind 4) on Cloudflare Workers that turns two parents' freeform give/want lists into a deterministic Markdown barter contract with an LLM-estimated fairness verdict, gated behind Supabase auth with RLS-scoped persistence (**EVIDENCE:** PRD + `package.json` + `src/` graph). The codebase is small and young — **36 source files, 55 internal import edges, 0 circular dependencies** — and strictly layered: pages/API → `src/lib` services → `src/types.ts` (**EVIDENCE:** Artifact 2). Its two structural keystones are `src/lib/supabase.ts` (the data/auth client, fan-in 7) and `src/layouts/Layout.astro` (the page shell, fan-in 6) (**EVIDENCE:** fan-in counts). The single highest-risk file is `src/pages/api/evaluate.ts` — the most-churned code file *and* the most-coupled module (fan-out 6), orchestrating five lib services (**EVIDENCE:** Artifacts 1+2). The actual data layer lives in `supabase/` as 4 SQL migrations + 4 pgTAP tests — no JS/TS — so its correctness is enforced in SQL, not crawlable by the import graph (**EVIDENCE:** `find supabase`). The whole repo is the work of **one human maintainer** (under two git identities) with Claude as an AI pair, so the durable "expert" is the `context/` decision trail, not a team (**EVIDENCE:** Artifact 3). Development is after-hours and accelerating (19 → 24 → 37 commits/week) (**EVIDENCE:** Artifact 1).
+ToySwapper is an Astro 6 SSR app (React 19 islands, Tailwind 4) on Cloudflare Workers that turns two parents' freeform give/want lists into a deterministic Markdown barter contract with an LLM-estimated fairness verdict, gated behind Supabase auth with RLS-scoped persistence (**EVIDENCE:** PRD + `package.json` + `src/` graph). The codebase is small and young — **36 source files, 55 internal import edges, 0 circular dependencies** — and strictly layered: pages/API → `src/lib` services → `src/types.ts` (**EVIDENCE:** Artifact 2). Its two structural keystones are `src/lib/supabase.ts` (the data/auth client, fan-in 7) and `src/layouts/Layout.astro` (the page shell, fan-in 6) (**EVIDENCE:** fan-in counts). The single highest-risk file is `src/pages/api/evaluate.ts` — the most-churned code file _and_ the most-coupled module (fan-out 6), orchestrating five lib services (**EVIDENCE:** Artifacts 1+2). The actual data layer lives in `supabase/` as 4 SQL migrations + 4 pgTAP tests — no JS/TS — so its correctness is enforced in SQL, not crawlable by the import graph (**EVIDENCE:** `find supabase`). The whole repo is the work of **one human maintainer** (under two git identities) with Claude as an AI pair, so the durable "expert" is the `context/` decision trail, not a team (**EVIDENCE:** Artifact 3). Development is after-hours and accelerating (19 → 24 → 37 commits/week) (**EVIDENCE:** Artifact 1).
 
 ```mermaid
 flowchart TD
@@ -52,7 +52,7 @@ flowchart TD
   EXT -.HTTPS.-> PG
 ```
 
-*(INFERENCE: the dotted edges to Postgres are runtime data-flow, not import edges — the import graph cannot see them; see Ograniczenia.)*
+_(INFERENCE: the dotted edges to Postgres are runtime data-flow, not import edges — the import graph cannot see them; see Ograniczenia.)_
 
 ---
 
@@ -60,13 +60,13 @@ flowchart TD
 
 **High-responsibility folders** (EVIDENCE: churn from Artifact 1, fan-in from Artifact 2):
 
-| Folder | Why it's load-bearing | Signal |
-|---|---|---|
-| `src/lib` | Business logic + data access; holds both keystone (`supabase.ts`) and determinism-critical `evaluator.ts` | dir-churn 17; fan-in hub |
-| `src/pages/api` | The gated evaluate endpoint — product's core action | `evaluate.ts` = top code churn + top fan-out |
-| `supabase/` | The RLS data contract; correctness enforced in SQL | dir-churn high; 4 migrations + 4 tests |
-| `context/foundation` | PRD/roadmap/conventions — the decision spine | **#1 churned path** (roadmap touched 9×) |
-| `test/` | 10+ specs co-evolving with `src/lib` | dir-churn 17, concentrated in week W24 |
+| Folder               | Why it's load-bearing                                                                                     | Signal                                       |
+| -------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `src/lib`            | Business logic + data access; holds both keystone (`supabase.ts`) and determinism-critical `evaluator.ts` | dir-churn 17; fan-in hub                     |
+| `src/pages/api`      | The gated evaluate endpoint — product's core action                                                       | `evaluate.ts` = top code churn + top fan-out |
+| `supabase/`          | The RLS data contract; correctness enforced in SQL                                                        | dir-churn high; 4 migrations + 4 tests       |
+| `context/foundation` | PRD/roadmap/conventions — the decision spine                                                              | **#1 churned path** (roadmap touched 9×)     |
+| `test/`              | 10+ specs co-evolving with `src/lib`                                                                      | dir-churn 17, concentrated in week W24       |
 
 **Peripheral / low-responsibility** (INFERENCE):
 
@@ -76,11 +76,11 @@ flowchart TD
 
 **Weekly velocity** (EVIDENCE: Artifact 1):
 
-| ISO week | Commits | Focus |
-|---|---|---|
-| 2026-W22 | 19 | RLS baseline, seed pool, logging foundations |
-| 2026-W23 | 24 | auth gate (S-01), restore lists (S-02), UX polish |
-| 2026-W24 | 37 | evaluation-history, testing campaign, context refactor |
+| ISO week | Commits | Focus                                                  |
+| -------- | ------- | ------------------------------------------------------ |
+| 2026-W22 | 19      | RLS baseline, seed pool, logging foundations           |
+| 2026-W23 | 24      | auth gate (S-01), restore lists (S-02), UX polish      |
+| 2026-W24 | 37      | evaluation-history, testing campaign, context refactor |
 
 INFERENCE: monotonic acceleration + a clean Jun 4–7 gap = an after-hours solo cadence ramping toward v2 completion, not a stalling project.
 
@@ -90,10 +90,10 @@ INFERENCE: monotonic acceleration + a clean Jun 4–7 gap = an after-hours solo 
 
 **Co-change coupling** (EVIDENCE: files committed together ≥3× over full history):
 
-| Pair | Times together | Meaning |
-|---|---|---|
-| `src/lib/evaluator.ts` ⇄ `src/pages/api/evaluate.ts` | 3 | The endpoint and its core engine move as a unit. |
-| `context/changes/structured-logging-baseline/{change,plan}.md` | 3 | Methodology artifact pair — not code. |
+| Pair                                                           | Times together | Meaning                                          |
+| -------------------------------------------------------------- | -------------- | ------------------------------------------------ |
+| `src/lib/evaluator.ts` ⇄ `src/pages/api/evaluate.ts`           | 3              | The endpoint and its core engine move as a unit. |
+| `context/changes/structured-logging-baseline/{change,plan}.md` | 3              | Methodology artifact pair — not code.            |
 
 EVIDENCE: no other file pair crosses the ≥3 threshold → the repo is **genuinely loosely
 coupled at the commit level**; there is no tangled cluster of files that always change together.
@@ -115,14 +115,14 @@ under-represents the real runtime dependency of `evaluate.ts`/data helpers on th
 
 ## 4. Strefy ryzyka (risk zones)
 
-| # | Zone | One-line why |
-|---|---|---|
-| Z1 | `src/pages/api/evaluate.ts` | EVIDENCE: top churn + top fan-out (6) — highest blast radius in the repo. |
-| Z2 | `src/lib/supabase.ts` | EVIDENCE: keystone fan-in 7 — one edit ripples to middleware, every auth route, evaluate, and 2 pages. |
-| Z3 | `supabase/` RLS contract | INFERENCE: a wrong policy silently leaks every user's rows; correctness is SQL-only and import-invisible. |
-| Z4 | Determinism boundary (`evaluator.ts` + LLM call) | EVIDENCE: PRD-locked byte-identical-output rule; INFERENCE: easy to break via an unseeded/uncached LLM path. |
-| Z5 | Bus factor = 1 | EVIDENCE: single human maintainer (Artifact 3) — no human redundancy if unavailable. |
-| Z6 | Orphan/dead components | EVIDENCE: `Welcome.astro` + `ui/LibBadge.astro` unreferenced — low severity, but they mislead onboarding. |
+| #   | Zone                                             | One-line why                                                                                                 |
+| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Z1  | `src/pages/api/evaluate.ts`                      | EVIDENCE: top churn + top fan-out (6) — highest blast radius in the repo.                                    |
+| Z2  | `src/lib/supabase.ts`                            | EVIDENCE: keystone fan-in 7 — one edit ripples to middleware, every auth route, evaluate, and 2 pages.       |
+| Z3  | `supabase/` RLS contract                         | INFERENCE: a wrong policy silently leaks every user's rows; correctness is SQL-only and import-invisible.    |
+| Z4  | Determinism boundary (`evaluator.ts` + LLM call) | EVIDENCE: PRD-locked byte-identical-output rule; INFERENCE: easy to break via an unseeded/uncached LLM path. |
+| Z5  | Bus factor = 1                                   | EVIDENCE: single human maintainer (Artifact 3) — no human redundancy if unavailable.                         |
+| Z6  | Orphan/dead components                           | EVIDENCE: `Welcome.astro` + `ui/LibBadge.astro` unreferenced — low severity, but they mislead onboarding.    |
 
 ---
 
@@ -132,14 +132,14 @@ EVIDENCE (Artifact 3): there is **one human** — Michał Zasiadczuk
 (`m.zasiadczuk.98@gmail.com`), also appearing as the day-1 machine identity `Michal_MAC`. The
 practical "expert" per zone is the documented decision trail.
 
-| Risk zone | Ask | Durable source of truth |
-|---|---|---|
-| Z1 evaluate endpoint | Michał Zasiadczuk | `context/archive/2026-05-31-gated-evaluator/`, `…feature-evaluation-history/` |
-| Z2 supabase keystone | Michał Zasiadczuk | `src/lib/CLAUDE.md`, `supabase/README.md` |
-| Z3 RLS contract | Michał Zasiadczuk | `supabase/README.md` + pgTAP tests in `supabase/tests/` |
-| Z4 determinism | Michał Zasiadczuk | `context/foundation/conventions.md` (PRD-locked rules), `context/foundation/prd.md` §NFR |
-| Z5 bus factor | — (no human backup) | The whole `context/` methodology trail is the redundancy. |
-| Z6 dead code | Michał Zasiadczuk | git blame (day-1 starter leftovers) |
+| Risk zone            | Ask                 | Durable source of truth                                                                  |
+| -------------------- | ------------------- | ---------------------------------------------------------------------------------------- |
+| Z1 evaluate endpoint | Michał Zasiadczuk   | `context/archive/2026-05-31-gated-evaluator/`, `…feature-evaluation-history/`            |
+| Z2 supabase keystone | Michał Zasiadczuk   | `src/lib/CLAUDE.md`, `supabase/README.md`                                                |
+| Z3 RLS contract      | Michał Zasiadczuk   | `supabase/README.md` + pgTAP tests in `supabase/tests/`                                  |
+| Z4 determinism       | Michał Zasiadczuk   | `context/foundation/conventions.md` (PRD-locked rules), `context/foundation/prd.md` §NFR |
+| Z5 bus factor        | — (no human backup) | The whole `context/` methodology trail is the redundancy.                                |
+| Z6 dead code         | Michał Zasiadczuk   | git blame (day-1 starter leftovers)                                                      |
 
 INFERENCE: onboarding here means reading `context/`, not interviewing people — the repo was
 built AI-paired and spec-first, so rationale lives in plans/PRD, not in colleagues' heads.
@@ -173,7 +173,7 @@ Ordered for a new engineer; read top-to-bottom (EVIDENCE: all paths verified to 
   correctness is verified by pgTAP + `supabase/README.md`, **not** by this map (UNKNOWN here).
 - **No SVG / rendered graph** generated yet (deferred per the lesson plan; tabular data first).
 - **Determinism, ≤5s latency, and the RLS multi-account guarantee are runtime properties** — this
-  map locates *where* they live but does not test them (UNKNOWN: not exercised here).
+  map locates _where_ they live but does not test them (UNKNOWN: not exercised here).
 - **Contributor analysis collapses two identities into one human** and discards AI co-authors;
   it is ownership-by-authorship, not a competence or availability assessment (INFERENCE).
 - **`.astro` imports were parsed by a bespoke regex**, not a full Astro compiler — exotic import
