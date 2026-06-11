@@ -227,12 +227,12 @@ None — additive test-only change; no schema, data, or API change.
 
 #### Automated
 
-- [x] 2.1 Suite green: `npm run test`
-- [x] 2.2 Type check clean: `npx tsc --noEmit`
-- [x] 2.3 Lint clean: `npm run lint`
-- [x] 2.4 Production untouched (`git diff --name-only` only under `test/`)
+- [x] 2.1 Suite green: `npm run test` — 58211d2
+- [x] 2.2 Type check clean: `npx tsc --noEmit` — 58211d2
+- [x] 2.3 Lint clean: `npm run lint` — 58211d2
+- [x] 2.4 Production untouched (`git diff --name-only` only under `test/`) — 58211d2
 
 #### Manual
 
-- [x] 2.5 Invalid-JSON test fails if handler try/catch removed
-- [x] 2.6 Zod test asserts the real `issues` shape
+- [x] 2.5 Invalid-JSON test fails if handler try/catch removed — 58211d2
+- [x] 2.6 Zod test asserts the real `issues` shape — 58211d2
