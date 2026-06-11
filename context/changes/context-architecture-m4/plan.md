@@ -320,12 +320,12 @@ No data or code migration. The only "migration" is content relocation; the origi
 
 #### Automated
 
-- [x] 4.1 Coverage map exists
-- [x] 4.2 No invariant keyword orphaned across the new layout
-- [x] 4.3 `npm run build` still green
+- [x] 4.1 Coverage map exists — 19d956f
+- [x] 4.2 No invariant keyword orphaned across the new layout — 19d956f
+- [x] 4.3 `npm run build` still green — 19d956f
 
 #### Manual
 
-- [x] 4.4 Every coverage-map row has a destination; no lost rule
-- [x] 4.5 Nested CLAUDE.md surfaces when touching `src/lib/` and `src/pages/api/`
-- [x] 4.6 Diverged rules read identically to the PRD in their canonical home
+- [x] 4.4 Every coverage-map row has a destination; no lost rule — 19d956f
+- [x] 4.5 Nested CLAUDE.md surfaces when touching `src/lib/` and `src/pages/api/` — 19d956f
+- [x] 4.6 Diverged rules read identically to the PRD in their canonical home — 19d956f
