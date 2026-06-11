@@ -290,31 +290,31 @@ No data or code migration. The only "migration" is content relocation; the origi
 
 #### Automated
 
-- [x] 2.1 Both nested files exist
-- [x] 2.2 Markdown well-formed (prettier)
-- [x] 2.3 Module/route maps match filesystem (no missing/extra entries)
+- [x] 2.1 Both nested files exist — 89c4f4d
+- [x] 2.2 Markdown well-formed (prettier) — 89c4f4d
+- [x] 2.3 Module/route maps match filesystem (no missing/extra entries) — 89c4f4d
 
 #### Manual
 
-- [x] 2.4 Nested files reference conventions.md, don't restate global rules
-- [x] 2.5 `src/lib/services/` reads as future convention, not existing dir
-- [x] 2.6 Local contract + per-file concern clear from each nested file
+- [x] 2.4 Nested files reference conventions.md, don't restate global rules — 89c4f4d
+- [x] 2.5 `src/lib/services/` reads as future convention, not existing dir — 89c4f4d
+- [x] 2.6 Local contract + per-file concern clear from each nested file — 89c4f4d
 
 ### Phase 3: Slim the root monolith
 
 #### Automated
 
-- [ ] 3.1 `CLAUDE.md` contains the `@context/foundation/conventions.md` import
-- [ ] 3.2 `AGENTS.md` points to conventions.md
-- [ ] 3.3 Both root files shrank materially (`wc -l`)
-- [ ] 3.4 Prettier clean on both root files
-- [ ] 3.5 No canonical rule body duplicated across root + conventions.md
+- [x] 3.1 `CLAUDE.md` contains the `@context/foundation/conventions.md` import
+- [x] 3.2 `AGENTS.md` points to conventions.md
+- [x] 3.3 Both root files shrank materially (`wc -l`)
+- [x] 3.4 Prettier clean on both root files
+- [x] 3.5 No canonical rule body duplicated across root + conventions.md
 
 #### Manual
 
-- [ ] 3.6 Claude Code inlines conventions.md via root CLAUDE.md
-- [ ] 3.7 AGENTS.md reads as coherent standalone onboarding doc
-- [ ] 3.8 Day-to-day contributor info findable in ≤1 hop
+- [x] 3.6 Claude Code inlines conventions.md via root CLAUDE.md
+- [x] 3.7 AGENTS.md reads as coherent standalone onboarding doc
+- [x] 3.8 Day-to-day contributor info findable in ≤1 hop
 
 ### Phase 4: Verify redistribution & sync
 
