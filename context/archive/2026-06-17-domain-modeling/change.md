@@ -1,10 +1,10 @@
 ---
 change_id: domain-modeling
 title: Strategic domain distillation and invariant identification via DDD
-status: new
+status: archived
 created: 2026-06-17
 updated: 2026-06-17
-archived_at: null
+archived_at: 2026-06-17T20:30:03Z
 ---
 
 ## Notes
