@@ -1,10 +1,10 @@
 ---
 change_id: refactor-opportunities
 title: Rank structural refactoring opportunities with environment pre-check
-status: new
+status: archived
 created: 2026-06-17
 updated: 2026-06-17
-archived_at: null
+archived_at: 2026-06-17T20:00:34Z
 ---
 
 ## Notes
