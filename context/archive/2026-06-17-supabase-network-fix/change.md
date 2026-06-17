@@ -1,10 +1,10 @@
 ---
 change_id: supabase-network-fix
 title: Recover local Supabase from Edge Runtime bootstrap timeout (502/503)
-status: new
+status: archived
 created: 2026-06-17
 updated: 2026-06-17
-archived_at: null
+archived_at: 2026-06-17T19:42:12Z
 ---
 
 ## Resolution (2026-06-17)
