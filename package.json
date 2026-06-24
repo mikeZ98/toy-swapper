@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "git-brief": "tsx scripts/git-brief/index.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.65",
@@ -21,6 +22,7 @@
     "@astrojs/react": "^5.0.4",
     "@astrojs/sitemap": "^3.7.2",
     "@eslint/config-helpers": "^0.6.0",
+    "@openrouter/ai-sdk-provider": "^2.9.1",
     "@radix-ui/react-slot": "^1.1.2",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.99.1",
@@ -62,6 +64,7 @@
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "supabase": "^2.23.4",
+    "tsx": "^4.22.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.2",
     "vitest": "^4.1.7",

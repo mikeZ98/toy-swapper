@@ -27,6 +27,10 @@ playwright-report/
 playwright/.cache/
 e2e/.auth/
 
+# git-brief local cache (disposable; must stay untracked so it doesn't perturb
+# the payload hash it feeds — see scripts/git-brief/cache.ts)
+.git-brief-cache.json
+
 # macOS-specific files
 .DS_Store
 
