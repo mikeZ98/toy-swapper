@@ -27,6 +27,11 @@ jobs:
 
   db:
     runs-on: ubuntu-latest
+    # Expose the project ref at job level so the prod-push step's `if:` can guard
+    # on it. The `secrets` context is NOT available in step-level conditionals
+    # (nor is a step's own `env:`), so the guard must read it via the job `env`.
+    env:
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
@@ -43,13 +48,15 @@ jobs:
       # Run the pgTAP suite under supabase/tests/ (the RLS contract test).
       - run: supabase test db
       # On merge to master only: apply pending migrations to the prod project
-      # before any deploy. Requires repo secrets (see README "CI").
+      # before any deploy. Requires repo secrets (see README "CI"). Guarded on
+      # env.SUPABASE_PROJECT_REF so it SKIPS cleanly (instead of red-failing)
+      # when the deploy secrets are absent — e.g. forks, or before prod secrets
+      # are configured.
       - name: Push migrations to production
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && env.SUPABASE_PROJECT_REF != ''
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_REF"
           supabase db push --linked
