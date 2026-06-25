@@ -8,7 +8,7 @@ import { safeRedirectPath } from "@/lib/redirect";
 // `/`-bounded sub-path. Pages redirect to sign-in; `/api/*` returns 401 JSON.
 function isGated(pathname: string): boolean {
   if (pathname === "/") return true;
-  return ["/dashboard", "/history", "/api/evaluate"].some(
+  return ["/dashboard", "/history", "/api/evaluate", "/api/history"].some(
     (route) => pathname === route || pathname.startsWith(route + "/"),
   );
 }

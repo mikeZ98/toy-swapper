@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 
-import { saveEvaluation, getEvaluationHistory } from "@/lib/evaluation-history";
+import { saveEvaluation, getEvaluationHistory, deleteEvaluation } from "@/lib/evaluation-history";
 import type { EvaluateResponse } from "@/types";
 
 interface QueryResult {
@@ -14,12 +14,22 @@ interface QueryResult {
 // `.from().select().eq().order()` where `.order()` is the TERMINAL call that
 // resolves to { data, error } (the divergence from user-lists, which terminates
 // on `.maybeSingle()`). `calls` captures arguments for assertions.
+// The delete chain is `.from().delete().eq("id").eq("user_id")`, terminating by
+// awaiting the builder itself (supabase filter builders are thenable). So the
+// builder exposes a `then` that resolves to { error } and `eq` records every
+// call in `eqCalls` (the read path still reads the singular eqCol/eqVal).
 function makeClient(result: QueryResult) {
   const calls: Record<string, unknown> = {};
+  const eqCalls: { col: string; val: unknown }[] = [];
+  calls.eqCalls = eqCalls;
   const builder = {
     insert: vi.fn((payload: unknown) => {
       calls.insertPayload = payload;
       return Promise.resolve({ error: result.error ?? null });
+    }),
+    delete: vi.fn(() => {
+      calls.deleteCalled = true;
+      return builder;
     }),
     select: vi.fn((cols: string) => {
       calls.selectCols = cols;
@@ -28,6 +38,7 @@ function makeClient(result: QueryResult) {
     eq: vi.fn((col: string, val: unknown) => {
       calls.eqCol = col;
       calls.eqVal = val;
+      eqCalls.push({ col, val });
       return builder;
     }),
     order: vi.fn((col: string, opts: unknown) => {
@@ -35,6 +46,8 @@ function makeClient(result: QueryResult) {
       calls.orderOpts = opts;
       return Promise.resolve({ data: result.data ?? null, error: result.error ?? null });
     }),
+    // Thenable terminal for the delete chain (no .order()/.maybeSingle() tail).
+    then: (resolve: (v: QueryResult) => unknown) => resolve({ data: result.data ?? null, error: result.error ?? null }),
   };
   const client = {
     from: vi.fn((table: string) => {
@@ -217,5 +230,29 @@ describe("getEvaluationHistory", () => {
     expect(item.contract).toContain("Alice's Toys");
     // The list label, by contrast, reflects the live join.
     expect(item.counterparty_name).toBe("Renamed Co");
+  });
+});
+
+describe("deleteEvaluation", () => {
+  it("throws when the client is null", async () => {
+    await expect(deleteEvaluation(null, "user-1", "row-1")).rejects.toThrow(/no Supabase client/);
+  });
+
+  it("deletes the row scoped by BOTH id and user_id (defense-in-depth)", async () => {
+    const { client, calls } = makeClient({ error: null });
+    await deleteEvaluation(client, "user-1", "row-1");
+
+    expect(calls.table).toBe("evaluation_history");
+    expect(calls.deleteCalled).toBe(true);
+    expect(calls.eqCalls).toEqual([
+      { col: "id", val: "row-1" },
+      { col: "user_id", val: "user-1" },
+    ]);
+  });
+
+  it("propagates a DB error and preserves the Postgres code via cause", async () => {
+    const { client } = makeClient({ error: { message: "nope", code: "42501" } });
+    await expect(deleteEvaluation(client, "user-1", "row-1")).rejects.toThrow(/evaluation_history delete failed: nope/);
+    await expect(deleteEvaluation(client, "user-1", "row-1")).rejects.toMatchObject({ cause: { code: "42501" } });
   });
 });

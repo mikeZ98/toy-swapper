@@ -17,7 +17,12 @@ export default defineConfig({
     // into jsdom per-file via a `// @vitest-environment jsdom` docblock —
     // environmentMatchGlobs was removed in Vitest 4. setupFiles only registers
     // jest-dom matchers + cleanup, so node-environment tests are unaffected.
-    include: ["test/**/*.test.ts", "test/**/*.test.tsx"],
+    include: [
+      "test/**/*.test.ts",
+      "test/**/*.test.tsx",
+      // Colocated unit tests for standalone tooling (e.g. scripts/git-brief/).
+      "scripts/**/*.test.ts",
+    ],
     setupFiles: ["./test/setup-dom.ts"],
   },
 });
