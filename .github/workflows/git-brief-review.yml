@@ -1,0 +1,56 @@
+name: git-brief review
+
+on:
+  pull_request:
+    branches: [master]
+
+# gh pr comment needs write access to the PR; everything else is read-only.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so git-brief's `git log --since` / diff see real commits,
+          # not just the squashed PR-merge tip.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Run the briefing CLI. The brief itself goes to STDOUT (captured to a file);
+      # [CACHE …]/diagnostic markers go to STDERR and stay in the job log. Absent the
+      # secret the CLI falls back to its deterministic rule-based stub, so this step
+      # never hard-fails the job — it just degrades to a key-free brief.
+      - name: Generate git-brief
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: npm run --silent git-brief > brief.md
+
+      # Post the brief back to the PR as a single sticky comment (visible
+      # proof-of-work). `--edit-last` updates the bot's previous comment in place;
+      # `--create-if-none` creates it on the first run instead of erroring. If the
+      # runner's gh predates --create-if-none, the `||` fallback creates it.
+      - name: Post brief to PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo "## 🔎 git-brief"
+            echo
+            echo "_Automated git-state briefing for this PR._"
+            echo
+            cat brief.md
+          } > comment.md
+          gh pr comment "$PR" --edit-last --create-if-none --body-file comment.md \
+            || gh pr comment "$PR" --edit-last --body-file comment.md \
+            || gh pr comment "$PR" --body-file comment.md
