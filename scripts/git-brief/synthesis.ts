@@ -22,7 +22,11 @@ const sectionsSchema = z.object({
       z.object({
         theme: z.string().describe("logical theme of the work"),
         summary: z.string().describe("one-line summary grounded in commit subjects"),
-        commits: z.number().int().describe("number of commits in this theme"),
+        // Plain number, NOT z.number().int(): the integer constraint serializes
+        // to a JSON schema with safe-integer minimum/maximum bounds, which some
+        // OpenRouter-routed providers (e.g. Azure) reject on `integer` types.
+        // temperature:0 + the description keep the value a whole count.
+        commits: z.number().describe("number of commits in this theme (a whole integer count)"),
       }),
     )
     .describe("What landed: recent commits grouped into logical themes. Empty if no commits."),

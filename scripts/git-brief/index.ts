@@ -50,8 +50,19 @@ async function main(): Promise<void> {
   // without one, fall back to the deterministic rule-based stub (no model call).
   let sections: BriefSections;
   if (process.env.OPENROUTER_API_KEY) {
-    process.stderr.write("Synthesizing via OpenRouter…\n");
-    sections = await synthesize(payload);
+    // Live path. A synthesis failure (provider error, rejected schema, network)
+    // must degrade to the deterministic stub, never red-fail the run — matching
+    // the key-absent path. The error is surfaced on STDERR for diagnosis.
+    try {
+      process.stderr.write("Synthesizing via OpenRouter…\n");
+      sections = await synthesize(payload);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(
+        `[WARNING] OpenRouter synthesis failed (${msg}). Falling back to local rule-based stub mode.\n`,
+      );
+      sections = stubSections(payload);
+    }
   } else {
     process.stderr.write("[WARNING] OPENROUTER_API_KEY missing. Falling back to local rule-based stub mode.\n");
     sections = stubSections(payload);
