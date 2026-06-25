@@ -55,6 +55,26 @@ export async function saveEvaluation(
 }
 
 /**
+ * Delete a single history row the user owns ("clear my history" entry). Scopes
+ * the delete by BOTH `id` AND `user_id`: RLS already restricts deletes to the
+ * caller's own rows (`evaluation_history_delete_own`), but the explicit
+ * `user_id` filter is defense-in-depth mirroring the read path. A delete that
+ * matches no row (wrong id, or someone else's row hidden by RLS) is a silent
+ * no-op — not an error. Throws on a null client or a query error.
+ */
+export async function deleteEvaluation(client: SupabaseClient | null, userId: string, id: string): Promise<void> {
+  if (!client) {
+    throw new Error("evaluation_history delete unavailable: no Supabase client (SUPABASE_URL/SUPABASE_KEY unset)");
+  }
+
+  const { error } = await client.from("evaluation_history").delete().eq("id", id).eq("user_id", userId);
+
+  if (error) {
+    throw new Error(`evaluation_history delete failed: ${error.message}`, { cause: { code: error.code } });
+  }
+}
+
+/**
  * Read the user's evaluation history, most recent first (FR-019). Resolves the
  * counterparty name via the embedded `counterparties(name)` join (null for
  * NO-MATCH rows). Returns an empty array for an account with no history. Throws
