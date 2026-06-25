@@ -36,3 +36,6 @@ e2e/.auth/
 
 # jetbrains setting folder
 .idea/
+
+# git-brief CLI output (written by `npm run git-brief > brief.md`, incl. in CI)
+brief.md
