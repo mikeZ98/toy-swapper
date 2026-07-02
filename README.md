@@ -1,8 +1,16 @@
-# 10x Astro Starter
+# ToySwapper
 
-![](./public/template.png)
+Turn two parents' freeform "give" and "want" toy lists into a Markdown barter contract with an
+LLM-estimated fairness verdict. ToySwapper standardizes and values each item (PL + EN input),
+finds the single best bidirectional match from a counterparty pool, judges whether the swap is
+`FAIR` or `NEEDS BALANCING` against a relative threshold, and — when unbalanced — suggests which
+item to drop to even it out. Every run is deterministic and the full contract is CommonMark.
 
-A modern, opinionated starter template for building fast, accessible web applications.
+v1 shipped as a one-week in-memory MVP and is live. v2 adds Supabase auth, RLS-scoped persistence
+for give/want lists, and per-account evaluation history. The locked product lives in
+[`context/foundation/prd.md`](context/foundation/prd.md); the stack in
+[`context/foundation/tech-stack.md`](context/foundation/tech-stack.md); the sequencing in
+[`context/foundation/roadmap.md`](context/foundation/roadmap.md).
 
 ## Tech Stack
 
@@ -23,8 +31,8 @@ A modern, opinionated starter template for building fast, accessible web applica
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone <your-fork-or-repo-url> toyswapper
+cd toyswapper
 ```
 
 2. Install dependencies:
@@ -63,9 +71,14 @@ npm run dev
 ├── src/
 │ ├── layouts/ # Astro layouts
 │ ├── pages/ # Astro pages
-│ │ └── api/ # API endpoints
-│ ├── components/ # UI components (Astro & React)
-│ └── assets/ # Static assets
+│ │ ├── api/ # API endpoints (evaluate, auth, history)
+│ │ └── auth/ # Sign-in / sign-up / confirm-email pages
+│ ├── components/ # UI components (Astro & React islands)
+│ ├── lib/ # Services & helpers (evaluator.ts, evaluation-history.ts, user-lists.ts, supabase.ts …)
+│ ├── middleware.ts # Session gate — resolves the user and protects gated routes
+│ └── types.ts # Shared entities & DTOs
+├── supabase/ # Migrations, pgTAP tests, and the RLS contract (see supabase/README.md)
+├── context/foundation/ # Locked PRD, roadmap, tech-stack, test-plan (the written foundation)
 ├── public/ # Public assets
 ├── wrangler.jsonc # Cloudflare Workers config
 ```
@@ -163,8 +176,9 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 | `/auth/signup`        | Email/password sign-up form                                             |
 | `/auth/confirm-email` | Post-signup "check your inbox" page                                     |
 | `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
+| `/history`            | Gated per-account evaluation history (list + delete)                    |
 
-Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
+Route protection is handled in `src/middleware.ts`. Add paths to the `isGated()` helper there to require authentication — gated pages redirect to `/auth/signin` (preserving the original target), while gated `/api/*` routes return `401 JSON`.
 
 ## Deployment
 
@@ -195,11 +209,11 @@ GitHub Actions runs two parallel jobs on every push and PR to `master`:
 
 The migration-push step needs three additional GitHub Actions secrets. **Set them before the next merge to `master`, or the `db push` step will fail and block deploys:**
 
-| Secret                  | Description                                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| `SUPABASE_PROJECT_REF`  | The prod project's ref (the `<project-ref>` in its dashboard URL / `*.supabase.co` hostname).     |
-| `SUPABASE_ACCESS_TOKEN` | A personal access token from <https://supabase.com/dashboard/account/tokens>.                     |
-| `SUPABASE_DB_PASSWORD`  | The prod project's database password, set during project provisioning.                            |
+| Secret                  | Description                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| `SUPABASE_PROJECT_REF`  | The prod project's ref (the `<project-ref>` in its dashboard URL / `*.supabase.co` hostname). |
+| `SUPABASE_ACCESS_TOKEN` | A personal access token from <https://supabase.com/dashboard/account/tokens>.                 |
+| `SUPABASE_DB_PASSWORD`  | The prod project's database password, set during project provisioning.                        |
 
 ## License
 
